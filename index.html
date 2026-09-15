@@ -1,0 +1,121 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="description" content="RePlate connects surplus food with local NGOs and communities before it goes to waste." />
+    <title>RePlate | Good food deserves another plate.</title>
+    <script src="https://cdn.tailwindcss.com?plugins=typography"></script>
+    <script>
+      tailwind.config = {
+        theme: {
+          extend: {
+            colors: {
+              cream: '#f7f5ef',
+              forest: '#173b2a',
+              sage: '#a7b9a0',
+              moss: '#496a4c',
+              orange: '#e8894f',
+              ink: '#20352a'
+            },
+            fontFamily: {
+              display: ['Georgia', 'Cambria', 'serif'],
+              sans: ['ui-sans-serif', 'system-ui', 'sans-serif']
+            },
+            boxShadow: {
+              soft: '0 18px 50px rgba(23, 59, 42, 0.10)'
+            }
+          }
+        }
+      };
+    </script>
+    <link rel="stylesheet" href="./styles.css" />
+  </head>
+  <body class="bg-cream font-sans text-ink antialiased">
+    <header class="relative z-20 mx-auto flex max-w-7xl items-center justify-between px-6 py-6 lg:px-10">
+      <a href="#top" class="flex items-center gap-3" aria-label="RePlate home">
+        <span class="flex h-10 w-10 items-center justify-center rounded-full bg-forest text-cream" aria-hidden="true">
+          <svg viewBox="0 0 24 24" class="h-5 w-5 fill-none stroke-current" stroke-width="1.8">
+            <path d="M12 20c0-6.6 1.1-11 6.8-15.5.3 6.5-1.8 10.3-6.8 12.2M12 20C8.8 15.4 6.6 12.2 2.8 11c.8 4.8 3.3 7.9 9.2 9Z" />
+            <path d="M12 20V9" />
+          </svg>
+        </span>
+        <span class="font-display text-xl font-bold tracking-tight text-forest">RePlate</span>
+      </a>
+      <nav class="hidden items-center gap-8 text-sm font-semibold text-forest/80 md:flex" aria-label="Main navigation">
+        <a class="nav-link" href="#top">Home</a>
+        <a class="nav-link" href="#about">About</a>
+        <a class="nav-link" href="#how-it-works">Get Involved</a>
+        <a class="rounded-full border border-forest/20 px-5 py-2.5 text-forest transition hover:border-forest hover:bg-forest hover:text-cream" href="#get-involved">Sign In</a>
+      </nav>
+      <details class="mobile-menu relative md:hidden">
+        <summary class="flex h-10 w-10 cursor-pointer list-none items-center justify-center rounded-full border border-forest/20 text-forest" aria-label="Open navigation">
+          <svg viewBox="0 0 24 24" class="h-5 w-5 fill-none stroke-current" stroke-width="1.8"><path d="M4 7h16M4 12h16M4 17h16" /></svg>
+        </summary>
+        <nav class="absolute right-0 top-12 flex w-44 flex-col gap-1 rounded-2xl bg-white p-3 text-sm font-semibold text-forest shadow-soft" aria-label="Mobile navigation">
+          <a class="rounded-xl px-3 py-2 hover:bg-cream" href="#top">Home</a>
+          <a class="rounded-xl px-3 py-2 hover:bg-cream" href="#about">About</a>
+          <a class="rounded-xl px-3 py-2 hover:bg-cream" href="#how-it-works">Get Involved</a>
+          <a class="rounded-xl bg-forest px-3 py-2 text-cream" href="#get-involved">Sign In</a>
+        </nav>
+      </details>
+    </header>
+
+    <main id="top">
+      <section class="relative mx-auto max-w-7xl overflow-hidden px-6 pb-20 pt-8 lg:px-10 lg:pb-28 lg:pt-14">
+        <div class="absolute -right-24 -top-24 -z-0 h-80 w-80 rounded-full bg-sage/25 blur-3xl" aria-hidden="true"></div>
+        <div class="grid items-center gap-14 lg:grid-cols-[0.9fr_1.1fr] lg:gap-10">
+          <div class="reveal relative z-10 max-w-xl">
+            <p class="mb-6 flex items-center gap-3 text-xs font-bold uppercase tracking-[0.22em] text-moss"><span class="h-px w-8 bg-orange"></span> Good food deserves another plate.</p>
+            <h1 class="font-display text-5xl leading-[0.98] tracking-[-0.04em] text-forest sm:text-6xl lg:text-7xl">Good food, <em class="font-normal text-moss">shared</em> with purpose.</h1>
+            <p class="mt-7 max-w-lg text-lg leading-8 text-forest/70">RePlate brings restaurants, stores, NGOs, and neighbors together so surplus food reaches people instead of landfills.</p>
+            <div class="mt-9 flex flex-wrap items-center gap-4">
+              <a href="#get-involved" class="inline-flex items-center gap-3 rounded-full bg-forest px-6 py-3.5 text-sm font-bold text-cream shadow-soft transition hover:-translate-y-0.5 hover:bg-moss">Donate Food <span aria-hidden="true">&rarr;</span></a>
+              <a href="#how-it-works" class="inline-flex items-center gap-3 rounded-full border border-forest/25 px-6 py-3.5 text-sm font-bold text-forest transition hover:border-forest hover:bg-white">Find Food <span aria-hidden="true">&rarr;</span></a>
+            </div>
+            <div class="mt-12 flex items-center gap-4 text-sm text-forest/65"><span class="flex -space-x-2" aria-hidden="true"><span class="avatar bg-orange"></span><span class="avatar bg-moss"></span><span class="avatar bg-sage"></span></span><span><strong class="text-forest">Made for local action</strong><br />one listing can change a day's menu</span></div>
+          </div>
+          <div class="hero-art relative z-10 mx-auto w-full max-w-xl lg:justify-self-end">
+            <div class="absolute -left-7 top-16 h-24 w-24 rounded-full border border-orange/40" aria-hidden="true"></div>
+            <div class="absolute -bottom-8 right-12 h-32 w-32 rounded-full bg-orange/15" aria-hidden="true"></div>
+            <div class="relative aspect-[1.08/1] overflow-hidden rounded-[46%_54%_48%_52%/45%_43%_57%_55%] border-[12px] border-white shadow-soft">
+              <img src="./assets/hero-produce.jpg" alt="Fresh vegetables arranged for a food donation" class="h-full w-full object-cover" />
+              <div class="absolute inset-0 bg-forest/10"></div>
+            </div>
+            <div class="absolute -bottom-5 -left-2 rounded-2xl bg-white px-5 py-4 shadow-soft sm:left-3"><p class="text-xs font-semibold uppercase tracking-widest text-moss">Together, we can</p><p class="mt-1 font-display text-xl text-forest">feed more, waste less.</p></div>
+          </div>
+        </div>
+      </section>
+
+      <section id="about" class="border-y border-forest/10 bg-white/45" aria-labelledby="values-title">
+        <div class="mx-auto grid max-w-7xl gap-5 px-6 py-10 sm:grid-cols-3 lg:px-10">
+          <h2 id="values-title" class="sr-only">Why RePlate</h2>
+          <div class="flex items-start gap-4 border-forest/10 sm:border-r sm:pr-6"><span class="feature-icon">&#9673;</span><div><h2 class="font-display text-xl text-forest">Keep food in use</h2><p class="mt-1 text-sm leading-6 text-forest/60">Give surplus a route beyond the bin.</p></div></div>
+          <div class="flex items-start gap-4 border-forest/10 sm:border-r sm:pr-6"><span class="feature-icon">&#9825;</span><div><h2 class="font-display text-xl text-forest">Back local kitchens</h2><p class="mt-1 text-sm leading-6 text-forest/60">Put fresh food where neighbors need it.</p></div></div>
+          <div class="flex items-start gap-4"><span class="feature-icon">&#10043;</span><div><h2 class="font-display text-xl text-forest">Waste less together</h2><p class="mt-1 text-sm leading-6 text-forest/60">A practical habit with a wider impact.</p></div></div>
+        </div>
+      </section>
+
+      <section id="how-it-works" class="mx-auto max-w-7xl px-6 py-24 lg:px-10 lg:py-32" aria-labelledby="how-title">
+        <div class="max-w-xl"><p class="eyebrow">How it works</p><h2 id="how-title" class="mt-4 font-display text-4xl leading-tight tracking-tight text-forest sm:text-5xl">A simple route from surplus to <em class="font-normal text-moss">shared.</em></h2></div>
+        <div class="mt-16 grid gap-10 md:grid-cols-3">
+          <article class="step-card"><span class="step-number">01</span><div class="step-symbol bg-orange/15 text-orange">&#127828;</div><h3 class="mt-6 font-display text-2xl text-forest">Donors Share</h3><p class="mt-3 leading-7 text-forest/65">Restaurants, stores, and individuals list safe surplus food in a few simple details.</p></article>
+          <article class="step-card md:mt-12"><span class="step-number">02</span><div class="step-symbol bg-sage/35 text-moss">&#10047;</div><h3 class="mt-6 font-display text-2xl text-forest">NGOs Receive</h3><p class="mt-3 leading-7 text-forest/65">Verified NGOs discover nearby donations and coordinate a timely collection.</p></article>
+          <article class="step-card md:mt-24"><span class="step-number">03</span><div class="step-symbol bg-forest text-cream">&#9829;</div><h3 class="mt-6 font-display text-2xl text-forest">Communities Benefit</h3><p class="mt-3 leading-7 text-forest/65">Nutritious food reaches people who need it, strengthening our communities.</p></article>
+        </div>
+      </section>
+
+      <section class="relative overflow-hidden bg-forest text-cream" aria-labelledby="impact-title">
+        <div class="absolute -left-20 bottom-0 h-64 w-64 rounded-full border border-sage/20" aria-hidden="true"></div>
+        <div class="mx-auto grid max-w-7xl items-center gap-12 px-6 py-20 lg:grid-cols-[1fr_1.05fr] lg:px-10 lg:py-24">
+          <div class="relative z-10"><p class="eyebrow text-sage">The impact</p><h2 id="impact-title" class="mt-4 max-w-lg font-display text-4xl leading-tight sm:text-5xl">Every rescued meal is a <em class="font-normal text-sage">step forward.</em></h2><div class="prose prose-lg prose-invert mt-6 max-w-md"><p>A donation does more than clear a shelf. It helps a local kitchen plan its next meal and keeps edible food out of the waste stream.</p></div><div class="mt-10 grid max-w-md grid-cols-2 gap-8"><div><p class="font-display text-4xl text-orange">Local</p><p class="mt-1 text-xs uppercase tracking-widest text-cream/55">connections</p></div><div><p class="font-display text-4xl text-sage">Daily</p><p class="mt-1 text-xs uppercase tracking-widest text-cream/55">difference</p></div></div></div>
+          <div class="relative mx-auto w-full max-w-lg"><div class="absolute -right-5 -top-5 h-24 w-24 rounded-full bg-orange/80" aria-hidden="true"></div><div class="relative aspect-[1.15/1] overflow-hidden rounded-[54%_46%_45%_55%/46%_52%_48%_54%] border-[10px] border-cream/10"><img src="./assets/community-meal.jpg" alt="People sharing a welcoming community meal" class="h-full w-full object-cover" /><img src="./assets/impact-produce.jpg" alt="Fresh produce saved from waste" class="absolute bottom-5 right-5 h-28 w-28 rounded-[42%] border-4 border-cream object-cover shadow-soft sm:h-36 sm:w-36" /></div><div class="absolute -bottom-6 -left-3 flex items-center gap-3 rounded-full bg-cream px-5 py-3 text-sm font-bold text-forest shadow-soft"><span class="flex h-8 w-8 items-center justify-center rounded-full bg-sage/40 text-moss">&#10003;</span> Good food saved</div></div>
+        </div>
+      </section>
+
+      <section id="get-involved" class="mx-auto max-w-7xl px-6 py-24 text-center lg:px-10 lg:py-32"><p class="eyebrow">Join the movement</p><h2 class="mx-auto mt-4 max-w-2xl font-display text-4xl leading-tight tracking-tight text-forest sm:text-6xl">Good food should never go to waste.<br /><em class="font-normal text-moss">Let's make sure it doesn't.</em></h2><div class="mt-9 flex flex-wrap justify-center gap-4"><a href="#top" class="rounded-full bg-orange px-7 py-4 text-sm font-bold text-white transition hover:-translate-y-0.5 hover:bg-[#d97840]">I want to donate food</a><a href="#top" class="rounded-full border border-forest/25 px-7 py-4 text-sm font-bold text-forest transition hover:border-forest hover:bg-white">I represent an NGO</a></div></section>
+    </main>
+
+    <footer class="border-t border-forest/10"><div class="mx-auto flex max-w-7xl flex-col gap-4 px-6 py-8 text-sm text-forest/60 sm:flex-row sm:items-center sm:justify-between lg:px-10"><div class="flex items-center gap-2 font-display font-bold text-forest"><span class="h-2 w-2 rounded-full bg-orange"></span> RePlate</div><p>Good food deserves another plate.</p><p>&copy; 2026 RePlate</p></div></footer>
+  </body>
+</html>
