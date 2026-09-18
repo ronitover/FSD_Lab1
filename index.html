@@ -32,7 +32,7 @@
     <link rel="stylesheet" href="./styles.css" />
   </head>
   <body class="bg-cream font-sans text-ink antialiased">
-    <header class="relative z-20 mx-auto flex max-w-7xl items-center justify-between px-6 py-6 lg:px-10">
+    <header class="glass-nav relative z-20 mx-auto flex max-w-7xl items-center justify-between px-6 py-6 lg:px-10">
       <a href="#top" class="flex items-center gap-3" aria-label="RePlate home">
         <span class="flex h-10 w-10 items-center justify-center rounded-full bg-forest text-cream" aria-hidden="true">
           <svg viewBox="0 0 24 24" class="h-5 w-5 fill-none stroke-current" stroke-width="1.8">
@@ -46,7 +46,7 @@
         <a class="nav-link" href="#top">Home</a>
         <a class="nav-link" href="#about">About</a>
         <a class="nav-link" href="#how-it-works">Get Involved</a>
-        <a class="rounded-full border border-forest/20 px-5 py-2.5 text-forest transition hover:border-forest hover:bg-forest hover:text-cream" href="#get-involved">Sign In</a>
+        <a class="nav-signin rounded-full px-5 py-2.5 text-forest transition" href="#get-involved">Sign In</a>
       </nav>
       <details class="mobile-menu relative md:hidden">
         <summary class="flex h-10 w-10 cursor-pointer list-none items-center justify-center rounded-full border border-forest/20 text-forest" aria-label="Open navigation">
@@ -62,32 +62,30 @@
     </header>
 
     <main id="top">
-      <section class="relative mx-auto max-w-7xl overflow-hidden px-6 pb-20 pt-8 lg:px-10 lg:pb-28 lg:pt-14">
-        <div class="absolute -right-24 -top-24 -z-0 h-80 w-80 rounded-full bg-sage/25 blur-3xl" aria-hidden="true"></div>
+      <section class="hero-section relative mx-auto max-w-7xl overflow-hidden px-6 pb-20 pt-8 lg:px-10 lg:pb-28 lg:pt-14">
+        <canvas id="hero-glass-canvas" class="hero-glass-canvas" aria-hidden="true"></canvas>
         <div class="grid items-center gap-14 lg:grid-cols-[0.9fr_1.1fr] lg:gap-10">
           <div class="reveal relative z-10 max-w-xl">
             <p class="mb-6 flex items-center gap-3 text-xs font-bold uppercase tracking-[0.22em] text-moss"><span class="h-px w-8 bg-orange"></span> Good food deserves another plate.</p>
             <h1 class="font-display text-5xl leading-[0.98] tracking-[-0.04em] text-forest sm:text-6xl lg:text-7xl">Good food, <em class="font-normal text-moss">shared</em> with purpose.</h1>
             <p class="mt-7 max-w-lg text-lg leading-8 text-forest/70">RePlate brings restaurants, stores, NGOs, and neighbors together so surplus food reaches people instead of landfills.</p>
-            <div class="mt-9 flex flex-wrap items-center gap-4">
-              <a href="#get-involved" class="inline-flex items-center gap-3 rounded-full bg-forest px-6 py-3.5 text-sm font-bold text-cream shadow-soft transition hover:-translate-y-0.5 hover:bg-moss">Donate Food <span aria-hidden="true">&rarr;</span></a>
-              <a href="#how-it-works" class="inline-flex items-center gap-3 rounded-full border border-forest/25 px-6 py-3.5 text-sm font-bold text-forest transition hover:border-forest hover:bg-white">Find Food <span aria-hidden="true">&rarr;</span></a>
+            <div class="mt-6 flex flex-wrap items-center gap-4">
+              <a href="#get-involved" class="hero-btn-primary inline-flex items-center gap-3 px-6 py-3.5 text-sm font-bold transition">Donate Food <span aria-hidden="true">&rarr;</span></a>
+              <a href="#how-it-works" class="hero-btn-secondary inline-flex items-center gap-3 px-6 py-3.5 text-sm font-bold transition">Find Food <span aria-hidden="true">&rarr;</span></a>
             </div>
-            <div class="journey-card mt-9" role="img" aria-label="A food parcel travels from a donor to an NGO, then to the community">
+            <div class="journey-card glass-surface mt-9" role="img" aria-label="A food parcel travels from a donor to an NGO, then to the community">
               <canvas id="journey-canvas" class="journey-canvas" aria-hidden="true"></canvas>
               <div class="journey-labels" aria-hidden="true"><span>Donor</span><span>NGO</span><span>Community</span></div>
               <p class="journey-hint" aria-hidden="true">Drag the parcel to turn it</p>
             </div>
-            <div class="mt-12 flex items-center gap-4 text-sm text-forest/65"><span class="flex -space-x-2" aria-hidden="true"><span class="avatar bg-orange"></span><span class="avatar bg-moss"></span><span class="avatar bg-sage"></span></span><span><strong class="text-forest">Made for local action</strong><br />one listing can change a day's menu</span></div>
+            <div class="mt-8 flex items-center gap-4 text-sm text-forest/65"><span class="flex -space-x-2" aria-hidden="true"><span class="avatar bg-orange"></span><span class="avatar bg-moss"></span><span class="avatar bg-sage"></span></span><span><strong class="text-forest">Made for local action</strong><br />one listing can change a day's menu</span></div>
           </div>
           <div class="hero-art relative z-10 mx-auto w-full max-w-xl lg:justify-self-end">
-            <div class="absolute -left-7 top-16 h-24 w-24 rounded-full border border-orange/40" aria-hidden="true"></div>
-            <div class="absolute -bottom-8 right-12 h-32 w-32 rounded-full bg-orange/15" aria-hidden="true"></div>
-            <div class="relative aspect-[1.08/1] overflow-hidden rounded-[46%_54%_48%_52%/45%_43%_57%_55%] border-[12px] border-white shadow-soft">
-              <img src="./assets/hero.png" alt="Fresh vegetables arranged for a food donation" class="h-full w-full object-cover" />
+            <div class="hero-photo relative aspect-[1.08/1] overflow-hidden shadow-soft">
+              <img src="./assets/hero.png" alt="Volunteers serving food from a large pot" class="h-full w-full object-cover" />
               <div class="absolute inset-0 bg-forest/10"></div>
+              <div class="caption-card absolute"><p class="text-xs font-semibold uppercase tracking-widest">Together, we can</p><p class="mt-1 font-display text-xl text-forest">feed more, waste less.</p></div>
             </div>
-            <div class="absolute -bottom-5 -left-2 rounded-2xl bg-white px-5 py-4 shadow-soft sm:left-3"><p class="text-xs font-semibold uppercase tracking-widest text-moss">Together, we can</p><p class="mt-1 font-display text-xl text-forest">feed more, waste less.</p></div>
           </div>
         </div>
       </section>
@@ -101,12 +99,15 @@
         </div>
       </section>
 
-      <section id="how-it-works" class="mx-auto max-w-7xl px-6 py-24 lg:px-10 lg:py-32" aria-labelledby="how-title">
-        <div class="max-w-xl"><p class="eyebrow">How it works</p><h2 id="how-title" class="mt-4 font-display text-4xl leading-tight tracking-tight text-forest sm:text-5xl">A simple route from surplus to <em class="font-normal text-moss">shared.</em></h2></div>
-        <div class="mt-16 grid gap-10 md:grid-cols-3">
-          <article class="step-card"><span class="step-number">01</span><div class="step-symbol bg-orange/15 text-orange">&#127828;</div><h3 class="mt-6 font-display text-2xl text-forest">Donors Share</h3><p class="mt-3 leading-7 text-forest/65">Restaurants, stores, and individuals list safe surplus food in a few simple details.</p></article>
-          <article class="step-card md:mt-12"><span class="step-number">02</span><div class="step-symbol bg-sage/35 text-moss">&#10047;</div><h3 class="mt-6 font-display text-2xl text-forest">NGOs Receive</h3><p class="mt-3 leading-7 text-forest/65">Verified NGOs discover nearby donations and coordinate a timely collection.</p></article>
-          <article class="step-card md:mt-24"><span class="step-number">03</span><div class="step-symbol bg-forest text-cream">&#9829;</div><h3 class="mt-6 font-display text-2xl text-forest">Communities Benefit</h3><p class="mt-3 leading-7 text-forest/65">Nutritious food reaches people who need it, strengthening our communities.</p></article>
+      <section id="how-it-works" class="how-section relative mx-auto max-w-7xl overflow-hidden px-6 py-24 lg:px-10 lg:py-32" aria-labelledby="how-title">
+        <canvas id="how-glass-canvas" class="how-glass-canvas" aria-hidden="true"></canvas>
+        <div class="how-content relative z-10">
+          <div class="max-w-xl"><p class="eyebrow">How it works</p><h2 id="how-title" class="mt-4 font-display text-4xl leading-tight tracking-tight text-forest sm:text-5xl">A simple route from surplus to <em class="font-normal text-moss">shared.</em></h2></div>
+          <div class="steps-grid mt-16 grid gap-10 md:grid-cols-3">
+            <article class="step-card"><span class="step-number" aria-hidden="true">01</span><div class="icon-tile" aria-hidden="true"><svg viewBox="0 0 32 32" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M5 16h22l-2 10H7L5 16Z"/><path d="M10 16c-1-5 2-8 5-9 2 3 2 6 0 9M19 16c0-4 2-7 6-8 1 4 0 7-2 8"/><path d="M10 21h12"/></svg></div><h3 class="mt-6 font-display text-2xl text-forest">Donors Share</h3><p class="mt-3 leading-7">Restaurants, stores, and individuals list safe surplus food in <em>a few simple details.</em></p></article>
+            <article class="step-card"><span class="step-number" aria-hidden="true">02</span><div class="icon-tile" aria-hidden="true"><svg viewBox="0 0 32 32" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M6 12h20v14H6zM10 12V8h12v4M6 18h20"/><path d="M16 15v6M13 18h6"/></svg></div><h3 class="mt-6 font-display text-2xl text-forest">NGOs Receive</h3><p class="mt-3 leading-7">Verified NGOs discover nearby donations and coordinate <em>a timely collection.</em></p></article>
+            <article class="step-card"><span class="step-number" aria-hidden="true">03</span><div class="icon-tile" aria-hidden="true"><svg viewBox="0 0 32 32" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M16 27S5 20 5 12a6 6 0 0 1 11-3 6 6 0 0 1 11 3c0 8-11 15-11 15Z"/><path d="M11 16h10"/></svg></div><h3 class="mt-6 font-display text-2xl text-forest">Communities Benefit</h3><p class="mt-3 leading-7">Nutritious food reaches people who need it, <em>strengthening our communities.</em></p></article>
+          </div>
         </div>
       </section>
 
@@ -123,5 +124,6 @@
 
     <footer class="border-t border-forest/10"><div class="mx-auto flex max-w-7xl flex-col gap-4 px-6 py-8 text-sm text-forest/60 sm:flex-row sm:items-center sm:justify-between lg:px-10"><div class="flex items-center gap-2 font-display font-bold text-forest"><span class="h-2 w-2 rounded-full bg-orange"></span> RePlate</div><p>Good food deserves another plate.</p><p>&copy; 2026 RePlate</p></div></footer>
     <script src="./journey.js" defer></script>
+    <script src="./how-glass.js" defer></script>
   </body>
 </html>
