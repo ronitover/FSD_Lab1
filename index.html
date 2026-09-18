@@ -73,6 +73,11 @@
               <a href="#get-involved" class="inline-flex items-center gap-3 rounded-full bg-forest px-6 py-3.5 text-sm font-bold text-cream shadow-soft transition hover:-translate-y-0.5 hover:bg-moss">Donate Food <span aria-hidden="true">&rarr;</span></a>
               <a href="#how-it-works" class="inline-flex items-center gap-3 rounded-full border border-forest/25 px-6 py-3.5 text-sm font-bold text-forest transition hover:border-forest hover:bg-white">Find Food <span aria-hidden="true">&rarr;</span></a>
             </div>
+            <div class="journey-card mt-9" role="img" aria-label="A food parcel travels from a donor to an NGO, then to the community">
+              <canvas id="journey-canvas" class="journey-canvas" aria-hidden="true"></canvas>
+              <div class="journey-labels" aria-hidden="true"><span>Donor</span><span>NGO</span><span>Community</span></div>
+              <p class="journey-hint" aria-hidden="true">Drag the parcel to turn it</p>
+            </div>
             <div class="mt-12 flex items-center gap-4 text-sm text-forest/65"><span class="flex -space-x-2" aria-hidden="true"><span class="avatar bg-orange"></span><span class="avatar bg-moss"></span><span class="avatar bg-sage"></span></span><span><strong class="text-forest">Made for local action</strong><br />one listing can change a day's menu</span></div>
           </div>
           <div class="hero-art relative z-10 mx-auto w-full max-w-xl lg:justify-self-end">
@@ -117,5 +122,6 @@
     </main>
 
     <footer class="border-t border-forest/10"><div class="mx-auto flex max-w-7xl flex-col gap-4 px-6 py-8 text-sm text-forest/60 sm:flex-row sm:items-center sm:justify-between lg:px-10"><div class="flex items-center gap-2 font-display font-bold text-forest"><span class="h-2 w-2 rounded-full bg-orange"></span> RePlate</div><p>Good food deserves another plate.</p><p>&copy; 2026 RePlate</p></div></footer>
+    <script src="./journey.js" defer></script>
   </body>
 </html>

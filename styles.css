@@ -99,6 +99,56 @@ summary:focus-visible {
   width: 1.8rem;
 }
 
+.journey-card {
+  background: radial-gradient(ellipse at 50% 90%, #edf3e8, #fff 68%);
+  border: 1px solid rgba(23, 59, 42, 0.12);
+  border-radius: 1.25rem;
+  max-width: 28rem;
+  overflow: hidden;
+  padding: 0.5rem 1rem 0.7rem;
+}
+
+.journey-canvas {
+  display: block;
+  height: 10rem;
+  width: 100%;
+  background: linear-gradient(90deg, transparent 15%, #d7e4d0 15%, #d7e4d0 85%, transparent 85%) center 75% / 100% 2px no-repeat;
+  touch-action: pan-y;
+}
+
+.webgl-ready .journey-canvas {
+  cursor: grab;
+}
+
+.webgl-ready .journey-canvas:active {
+  cursor: grabbing;
+}
+
+.journey-labels {
+  color: #173b2a;
+  display: flex;
+  font-size: 0.75rem;
+  font-weight: 700;
+  justify-content: space-between;
+  text-align: center;
+}
+
+.journey-labels span {
+  width: 33.33%;
+}
+
+.journey-hint {
+  color: #496a4c;
+  display: none;
+  font-size: 0.7rem;
+  margin: 0.45rem 0 0;
+  text-align: center;
+}
+
+.webgl-ready .journey-hint {
+  display: block;
+}
+
 @media (min-width: 768px) {
   .step-card:not(:last-child)::after {
     border-top: 1px dashed rgba(73, 106, 76, 0.35);
