@@ -20,7 +20,12 @@
   }
 
   function initBlobs(surface, layer, isHero) {
-  const gl = layer.getContext('webgl', { alpha: true, antialias: false, powerPreference: 'low-power' });
+  const gl = layer.getContext('webgl', {
+    alpha: true,
+    antialias: false,
+    powerPreference: 'low-power',
+    premultipliedAlpha: false
+  });
   if (!gl) return;
   const vertexSource = `
     attribute vec2 position;
@@ -46,20 +51,20 @@
       vec2 a = mix(vec2(0.16, 0.36), vec2(0.28, 0.72), narrow);
       vec2 b = mix(vec2(0.49, 0.36), vec2(0.7, 0.48), narrow);
       vec2 c = mix(vec2(0.83, 0.36), vec2(0.29, 0.21), narrow);
-      a = mix(a, vec2(0.59, 0.53), hero);
-      b = mix(b, vec2(0.87, 0.2), hero);
-      c = mix(c, vec2(0.22, 0.38), hero);
+      a = mix(a, vec2(0.62, 0.58), hero);
+      b = mix(b, vec2(0.9, 0.15), hero);
+      c = mix(c, vec2(0.15, 0.35), hero);
       a += vec2(drift, parallax);
       b += vec2(-drift * 0.8, -parallax * 0.7);
       c += vec2(drift * 0.6, parallax * 0.5);
       vec2 radius = mix(vec2(0.15, 0.25), vec2(0.3, 0.14), narrow);
-      radius = mix(radius, vec2(0.22, 0.31), hero);
+      radius = mix(radius, vec2(0.13, 0.19), hero);
       float first = blob(uv, a, radius, time * 0.25);
       float second = blob(uv, b, radius, time * 0.2 + 2.0);
       float third = blob(uv, c, radius, time * 0.22 + 4.0);
       vec3 sage = vec3(0.66, 0.76, 0.67);
       vec3 green = vec3(0.29, 0.48, 0.36);
-      vec3 color = (sage * first + green * second + sage * third) / max(first + second + third, 0.001);
+      vec3 color = (sage * first + green * second * 1.4 + sage * third) / max(first + second * 1.4 + third, 0.001);
       float alpha = min(0.36, first * 0.28 + second * 0.23 + third * 0.28);
       gl_FragColor = vec4(color, alpha);
     }
