@@ -62,10 +62,10 @@
       float first = blob(uv, a, radius, time * 0.25);
       float second = blob(uv, b, radius, time * 0.2 + 2.0);
       float third = blob(uv, c, radius, time * 0.22 + 4.0);
-      vec3 sage = vec3(0.66, 0.76, 0.67);
+      vec3 sage = vec3(0.56, 0.68, 0.58);
       vec3 green = vec3(0.29, 0.48, 0.36);
       vec3 color = (sage * first + green * second * 1.4 + sage * third) / max(first + second * 1.4 + third, 0.001);
-      float alpha = min(0.36, first * 0.28 + second * 0.23 + third * 0.28);
+      float alpha = min(0.5, first * 0.4 + second * 0.32 + third * 0.4);
       gl_FragColor = vec4(color, alpha);
     }
   `;
@@ -155,5 +155,23 @@
     const updateNav = () => nav.classList.toggle('scrolled', window.scrollY > 24);
     window.addEventListener('scroll', updateNav, { passive: true });
     updateNav();
+  }
+
+  function trackHighlight(el) {
+    el.addEventListener('pointermove', event => {
+      const rect = el.getBoundingClientRect();
+      el.style.setProperty('--mx', `${((event.clientX - rect.left) / rect.width) * 100}%`);
+      el.style.setProperty('--my', `${((event.clientY - rect.top) / rect.height) * 100}%`);
+    });
+  }
+  document.querySelectorAll('.glass-nav, .hero-btn-secondary, .nav-signin').forEach(trackHighlight);
+
+  if (nav && !motion.matches) {
+    const driftNav = () => {
+      const progress = Math.min(1, window.scrollY / 400);
+      nav.style.setProperty('--mx', `${30 + progress * 40}%`);
+    };
+    window.addEventListener('scroll', driftNav, { passive: true });
+    driftNav();
   }
 })();
