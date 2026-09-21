@@ -82,7 +82,7 @@
             <h1 class="font-display text-5xl leading-[0.98] tracking-[-0.04em] text-forest sm:text-6xl lg:text-7xl">Good food, <em class="font-normal text-moss">shared</em> with purpose.</h1>
             <p class="mt-7 max-w-lg text-lg leading-8 text-forest/70">RePlate brings restaurants, stores, NGOs, and neighbors together so surplus food reaches people instead of landfills.</p>
             <div class="mt-6 flex flex-wrap items-center gap-4">
-              <a href="#get-involved" class="hero-btn-primary inline-flex items-center gap-3 px-6 py-3.5 text-sm font-bold transition">Donate Food <span aria-hidden="true">&rarr;</span></a>
+              <button type="button" class="donate-trigger hero-btn-primary inline-flex items-center gap-3 px-6 py-3.5 text-sm font-bold transition">Donate Food <span aria-hidden="true">&rarr;</span></button>
               <a href="#how-it-works" class="hero-btn-secondary inline-flex items-center gap-3 px-6 py-3.5 text-sm font-bold transition">Find Food <span aria-hidden="true">&rarr;</span></a>
             </div>
             <div class="journey-card glass-surface mt-9" role="img" aria-label="A food parcel travels from a donor to an NGO, then to the community">
@@ -131,11 +131,51 @@
         </div>
       </section>
 
-      <section id="get-involved" class="mx-auto max-w-7xl px-6 py-24 text-center lg:px-10 lg:py-32"><p class="eyebrow">Join the movement</p><h2 class="mx-auto mt-4 max-w-2xl font-display text-4xl leading-tight tracking-tight text-forest sm:text-6xl">Good food should never go to waste.<br /><em class="font-normal text-moss">Let's make sure it doesn't.</em></h2><div class="mt-9 flex flex-wrap justify-center gap-4"><a href="#top" class="rounded-full bg-orange px-7 py-4 text-sm font-bold text-white transition hover:-translate-y-0.5 hover:bg-[#d97840]">I want to donate food</a><a href="#top" class="rounded-full border border-forest/25 px-7 py-4 text-sm font-bold text-forest transition hover:border-forest hover:bg-white">I represent an NGO</a></div></section>
+      <section id="get-involved" class="mx-auto max-w-7xl px-6 py-24 text-center lg:px-10 lg:py-32"><p class="eyebrow">Join the movement</p><h2 class="mx-auto mt-4 max-w-2xl font-display text-4xl leading-tight tracking-tight text-forest sm:text-6xl">Good food should never go to waste.<br /><em class="font-normal text-moss">Let's make sure it doesn't.</em></h2><div class="mt-9 flex flex-wrap justify-center gap-4"><button type="button" class="donate-trigger rounded-full bg-orange px-7 py-4 text-sm font-bold text-white transition hover:-translate-y-0.5 hover:bg-[#d97840]">I want to donate food</button><a href="#top" class="rounded-full border border-forest/25 px-7 py-4 text-sm font-bold text-forest transition hover:border-forest hover:bg-white">I represent an NGO</a></div><p id="donate-count" class="mt-4 text-sm text-forest/60"></p></section>
     </main>
 
     <footer class="border-t border-forest/10"><div class="mx-auto flex max-w-7xl flex-col gap-4 px-6 py-8 text-sm text-forest/60 sm:flex-row sm:items-center sm:justify-between lg:px-10"><div class="flex items-center gap-2 font-display font-bold text-forest"><span class="h-2 w-2 rounded-full bg-orange"></span> RePlate</div><p>Good food deserves another plate.</p><p>&copy; 2026 RePlate</p></div></footer>
+
+    <dialog id="donate-dialog" aria-labelledby="donate-dialog-title">
+      <div class="glass-surface relative mx-auto w-full max-w-lg rounded-3xl p-6 sm:p-8">
+        <button type="button" id="donate-cancel" class="absolute right-4 top-4 flex h-8 w-8 items-center justify-center rounded-full text-forest/60 transition hover:bg-forest/10 hover:text-forest" aria-label="Close">
+          <svg viewBox="0 0 24 24" class="h-4 w-4 fill-none stroke-current" stroke-width="2"><path d="M6 6l12 12M18 6L6 18" /></svg>
+        </button>
+        <p class="eyebrow">Share surplus food</p>
+        <h2 id="donate-dialog-title" class="mt-2 font-display text-2xl text-forest">Tell us what you're donating</h2>
+        <form id="donate-form" class="mt-6 space-y-5">
+          <div>
+            <label for="donate-title" class="text-sm font-semibold text-forest">What are you sharing?</label>
+            <input id="donate-title" name="title" type="text" required placeholder="e.g. 12 portions of vegetable curry" class="mt-1.5 w-full rounded-xl border border-forest/20 bg-white/70 px-4 py-2.5 text-sm text-ink outline-none transition focus:border-orange focus:ring-2 focus:ring-orange/30" />
+          </div>
+          <div>
+            <label for="donate-quantity" class="text-sm font-semibold text-forest">How much / how many servings?</label>
+            <input id="donate-quantity" name="quantity" type="text" placeholder="e.g. Serves about 15 people" class="mt-1.5 w-full rounded-xl border border-forest/20 bg-white/70 px-4 py-2.5 text-sm text-ink outline-none transition focus:border-orange focus:ring-2 focus:ring-orange/30" />
+          </div>
+          <div>
+            <label for="donate-address" class="text-sm font-semibold text-forest">Pickup address</label>
+            <div class="mt-1.5 flex flex-wrap gap-2">
+              <input id="donate-address" name="address" type="text" placeholder="Street, area, city" class="min-w-0 flex-1 rounded-xl border border-forest/20 bg-white/70 px-4 py-2.5 text-sm text-ink outline-none transition focus:border-orange focus:ring-2 focus:ring-orange/30" />
+              <button type="button" id="donate-locate" class="shrink-0 rounded-xl border border-forest/20 px-3 py-2.5 text-xs font-bold text-forest transition hover:border-forest hover:bg-white">Use my location</button>
+            </div>
+            <p id="donate-location-status" class="mt-1.5 text-xs text-forest/55" aria-live="polite"></p>
+          </div>
+          <div>
+            <span class="text-sm font-semibold text-forest">Photo (optional)</span>
+            <div id="donate-dropzone" class="photo-dropzone relative mt-1.5 flex min-h-[7rem] cursor-pointer flex-col items-center justify-center gap-1 overflow-hidden px-4 py-5 text-center" role="button" tabindex="0" aria-label="Upload or drag in a photo of the food">
+              <img id="donate-preview" alt="Preview of the food you're sharing" class="absolute inset-0 h-full w-full object-cover" hidden />
+              <span id="donate-dropzone-hint" class="text-xs text-forest/55">Drag a photo here, or click to choose one</span>
+              <input id="donate-photo" type="file" accept="image/*" tabindex="-1" class="sr-only" />
+            </div>
+          </div>
+          <button type="submit" class="hero-btn-primary inline-flex w-full items-center justify-center gap-2 px-6 py-3 text-sm font-bold transition">Post this listing</button>
+          <p id="donate-toast" class="text-center text-sm font-semibold text-moss" hidden>Thank you — your listing is live. Nearby NGOs will be notified.</p>
+        </form>
+      </div>
+    </dialog>
+
     <script src="./journey.js" defer></script>
     <script src="./how-glass.js" defer></script>
+    <script src="./donate.js" defer></script>
   </body>
 </html>
