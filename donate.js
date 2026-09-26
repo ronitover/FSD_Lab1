@@ -18,8 +18,10 @@
 
   const DRAFT_KEY = 'replate:donation-draft';
   const LISTINGS_KEY = 'replate:donations';
+  const PHOTO_MAX_SIDE = 1024;
   let photoDataUrl = null;
   let coords = null;
+  let toastTimer = 0;
 
   function readListings() {
     try {
@@ -85,11 +87,36 @@
     locationStatus.textContent = '';
   }
 
+  function showToast(message) {
+    toast.textContent = message;
+    toast.hidden = false;
+    clearTimeout(toastTimer);
+    toastTimer = setTimeout(() => { toast.hidden = true; }, 5000);
+  }
+
+  // Phone photos are several MB; as base64 they would overflow localStorage's ~5 MB quota,
+  // so the image is scaled down to a small JPEG before it is previewed or stored.
+  function shrinkImage(dataUrl) {
+    return new Promise(resolve => {
+      const img = new Image();
+      img.onload = () => {
+        const scale = Math.min(1, PHOTO_MAX_SIDE / Math.max(img.width, img.height));
+        const canvas = document.createElement('canvas');
+        canvas.width = Math.round(img.width * scale);
+        canvas.height = Math.round(img.height * scale);
+        canvas.getContext('2d').drawImage(img, 0, 0, canvas.width, canvas.height);
+        resolve(canvas.toDataURL('image/jpeg', 0.8));
+      };
+      img.onerror = () => resolve(dataUrl);
+      img.src = dataUrl;
+    });
+  }
+
   function handleFile(file) {
     if (!file || !file.type.startsWith('image/')) return;
     const reader = new FileReader();
-    reader.onload = event => {
-      photoDataUrl = event.target.result;
+    reader.onload = async event => {
+      photoDataUrl = await shrinkImage(event.target.result);
       showPreview(photoDataUrl);
       saveDraft();
     };
@@ -148,7 +175,6 @@
   });
 
   function openDialog() {
-    toast.hidden = true;
     loadDraft();
     dialog.showModal();
     titleInput.focus();
@@ -194,17 +220,21 @@
     };
     const listings = readListings();
     listings.push(listing);
+    let saved = true;
     try {
       localStorage.setItem(LISTINGS_KEY, JSON.stringify(listings));
+      localStorage.removeItem(DRAFT_KEY);
     } catch {
-      /* Quota exceeded (large photo) - the listing still gets posted for this session, just not persisted. */
+      /* Storage full or disabled - the listing is still posted for this session, just not remembered. */
+      saved = false;
     }
-    localStorage.removeItem(DRAFT_KEY);
     updateCount();
     notify('Listing posted to RePlate', `${listing.title} is now visible to nearby NGOs.`);
     dialog.close();
     resetFormState();
-    toast.hidden = false;
+    showToast(saved
+      ? 'Thank you — your listing is live. Nearby NGOs will be notified.'
+      : "Your listing is posted, but this browser couldn't save it for next time.");
   });
 
   updateCount();

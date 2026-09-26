@@ -3,20 +3,34 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="color-scheme" content="light dark" />
     <meta name="description" content="RePlate connects surplus food with local NGOs and communities before it goes to waste." />
     <title>RePlate | Good food deserves another plate.</title>
+    <script>
+      // Set the theme before first paint to avoid a flash: saved choice first, else the system setting.
+      (() => {
+        let theme = null;
+        try { theme = localStorage.getItem('replate:theme'); } catch {}
+        if (theme !== 'light' && theme !== 'dark') {
+          theme = window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
+        }
+        document.documentElement.dataset.theme = theme;
+      })();
+    </script>
     <script src="https://cdn.tailwindcss.com?plugins=typography"></script>
     <script>
       tailwind.config = {
         theme: {
           extend: {
+            // Colors resolve through CSS variables (see styles.css) so they can switch in dark mode.
             colors: {
-              cream: '#f7f5ef',
-              forest: '#173b2a',
-              sage: '#a7b9a0',
-              moss: '#496a4c',
-              orange: '#e8894f',
-              ink: '#20352a'
+              white: 'rgb(var(--c-white) / <alpha-value>)',
+              cream: 'rgb(var(--c-cream) / <alpha-value>)',
+              forest: 'rgb(var(--c-forest) / <alpha-value>)',
+              sage: 'rgb(var(--c-sage) / <alpha-value>)',
+              moss: 'rgb(var(--c-moss) / <alpha-value>)',
+              orange: 'rgb(var(--c-orange) / <alpha-value>)',
+              ink: 'rgb(var(--c-ink) / <alpha-value>)'
             },
             fontFamily: {
               display: ['Georgia', 'Cambria', 'serif'],
@@ -54,12 +68,17 @@
         </span>
         <span class="font-display text-xl font-bold tracking-tight text-forest">RePlate</span>
       </a>
+      <div class="flex items-center gap-3 md:gap-6">
       <nav class="hidden items-center gap-8 text-sm font-semibold text-forest/80 md:flex" aria-label="Main navigation">
         <a class="nav-link" href="#top">Home</a>
         <a class="nav-link" href="#about">About</a>
-        <a class="nav-link" href="#how-it-works">Get Involved</a>
+        <a class="nav-link" href="#get-involved">Get Involved</a>
         <a class="nav-signin rounded-full px-5 py-2.5 text-forest transition" href="#get-involved">Sign In</a>
       </nav>
+      <button type="button" class="theme-toggle" id="theme-toggle" aria-label="Switch to dark mode">
+        <svg class="icon-moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 14.5A8 8 0 0 1 9.5 4a8 8 0 1 0 10.5 10.5Z" /></svg>
+        <svg class="icon-sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" aria-hidden="true"><circle cx="12" cy="12" r="4" /><path d="M12 2v2M12 20v2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M2 12h2M20 12h2M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4" /></svg>
+      </button>
       <details class="mobile-menu relative md:hidden">
         <summary class="flex h-10 w-10 cursor-pointer list-none items-center justify-center rounded-full border border-forest/20 text-forest" aria-label="Open navigation">
           <svg viewBox="0 0 24 24" class="h-5 w-5 fill-none stroke-current" stroke-width="1.8"><path d="M4 7h16M4 12h16M4 17h16" /></svg>
@@ -67,10 +86,11 @@
         <nav class="absolute right-0 top-12 flex w-44 flex-col gap-1 rounded-2xl bg-white p-3 text-sm font-semibold text-forest shadow-soft" aria-label="Mobile navigation">
           <a class="rounded-xl px-3 py-2 hover:bg-cream" href="#top">Home</a>
           <a class="rounded-xl px-3 py-2 hover:bg-cream" href="#about">About</a>
-          <a class="rounded-xl px-3 py-2 hover:bg-cream" href="#how-it-works">Get Involved</a>
+          <a class="rounded-xl px-3 py-2 hover:bg-cream" href="#get-involved">Get Involved</a>
           <a class="rounded-xl bg-forest px-3 py-2 text-cream" href="#get-involved">Sign In</a>
         </nav>
       </details>
+      </div>
     </header>
 
     <main id="top">
@@ -105,9 +125,9 @@
       <section id="about" class="border-y border-forest/10 bg-white/45" aria-labelledby="values-title">
         <div class="mx-auto grid max-w-7xl gap-5 px-6 py-10 sm:grid-cols-3 lg:px-10">
           <h2 id="values-title" class="sr-only">Why RePlate</h2>
-          <div class="flex items-start gap-4 border-forest/10 sm:border-r sm:pr-6"><span class="feature-icon">&#9673;</span><div><h2 class="font-display text-xl text-forest">Keep food in use</h2><p class="mt-1 text-sm leading-6 text-forest/60">Give surplus a route beyond the bin.</p></div></div>
-          <div class="flex items-start gap-4 border-forest/10 sm:border-r sm:pr-6"><span class="feature-icon">&#9825;</span><div><h2 class="font-display text-xl text-forest">Back local kitchens</h2><p class="mt-1 text-sm leading-6 text-forest/60">Put fresh food where neighbors need it.</p></div></div>
-          <div class="flex items-start gap-4"><span class="feature-icon">&#10043;</span><div><h2 class="font-display text-xl text-forest">Waste less together</h2><p class="mt-1 text-sm leading-6 text-forest/60">A practical habit with a wider impact.</p></div></div>
+          <div class="flex items-start gap-4 border-forest/10 sm:border-r sm:pr-6"><span class="feature-icon">&#9673;</span><div><h3 class="font-display text-xl text-forest">Keep food in use</h3><p class="mt-1 text-sm leading-6 text-forest/60">Give surplus a route beyond the bin.</p></div></div>
+          <div class="flex items-start gap-4 border-forest/10 sm:border-r sm:pr-6"><span class="feature-icon">&#9825;</span><div><h3 class="font-display text-xl text-forest">Back local kitchens</h3><p class="mt-1 text-sm leading-6 text-forest/60">Put fresh food where neighbors need it.</p></div></div>
+          <div class="flex items-start gap-4"><span class="feature-icon">&#10043;</span><div><h3 class="font-display text-xl text-forest">Waste less together</h3><p class="mt-1 text-sm leading-6 text-forest/60">A practical habit with a wider impact.</p></div></div>
         </div>
       </section>
 
@@ -123,7 +143,30 @@
         </div>
       </section>
 
-      <section class="relative overflow-hidden bg-forest text-cream" aria-labelledby="impact-title">
+      <section id="watch" class="mx-auto max-w-7xl px-6 pb-24 lg:px-10 lg:pb-32" aria-labelledby="watch-title">
+        <div class="grid items-center gap-12 lg:grid-cols-[0.8fr_1.2fr] lg:gap-16">
+          <div class="max-w-md">
+            <p class="eyebrow">See it in action</p>
+            <h2 id="watch-title" class="mt-4 font-display text-4xl leading-tight tracking-tight text-forest sm:text-5xl">Why every donation <em class="font-normal text-moss">counts.</em></h2>
+            <p class="mt-5 leading-7 text-forest/70">A short film on what shared food means to the people and kitchens on the other end of a listing.</p>
+          </div>
+          <div class="relative">
+            <div class="absolute -bottom-6 -left-6 h-28 w-28 rounded-full bg-sage/30" aria-hidden="true"></div>
+            <div class="absolute -right-4 -top-4 h-16 w-16 rounded-full bg-orange/70" aria-hidden="true"></div>
+            <div class="video-frame glass-surface relative">
+              <div class="video-embed" data-video-id="0CbFrom3Qkk" data-video-title="Video Concept for NGO to Promote Donations">
+                <a class="video-play" href="https://www.youtube.com/watch?v=0CbFrom3Qkk" aria-label="Play video: Video Concept for NGO to Promote Donations">
+                  <img src="https://i.ytimg.com/vi/0CbFrom3Qkk/maxresdefault.jpg" alt="" loading="lazy" />
+                  <span class="video-play-icon" aria-hidden="true"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M8 5.5v13a1 1 0 0 0 1.5.86l10.5-6.5a1 1 0 0 0 0-1.72L9.5 4.64A1 1 0 0 0 8 5.5Z" /></svg></span>
+                  <span class="video-label" aria-hidden="true">Watch the film</span>
+                </a>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section class="impact-section relative overflow-hidden bg-forest text-cream" aria-labelledby="impact-title">
         <div class="absolute -left-20 bottom-0 h-64 w-64 rounded-full border border-sage/20" aria-hidden="true"></div>
         <div class="mx-auto grid max-w-7xl items-center gap-12 px-6 py-20 lg:grid-cols-[1fr_1.05fr] lg:px-10 lg:py-24">
           <div class="relative z-10"><p class="eyebrow text-sage">The impact</p><h2 id="impact-title" class="mt-4 max-w-lg font-display text-4xl leading-tight sm:text-5xl">Every rescued meal is a <em class="font-normal text-sage">step forward.</em></h2><div class="prose prose-lg prose-invert mt-6 max-w-md"><p>A donation does more than clear a shelf. It helps a local kitchen plan its next meal and keeps edible food out of the waste stream.</p></div><div class="mt-10 grid max-w-md grid-cols-2 gap-8"><div><p class="font-display text-4xl text-orange">Local</p><p class="mt-1 text-xs uppercase tracking-widest text-cream/55">connections</p></div><div><p class="font-display text-4xl text-sage">Daily</p><p class="mt-1 text-xs uppercase tracking-widest text-cream/55">difference</p></div></div></div>
@@ -131,7 +174,7 @@
         </div>
       </section>
 
-      <section id="get-involved" class="mx-auto max-w-7xl px-6 py-24 text-center lg:px-10 lg:py-32"><p class="eyebrow">Join the movement</p><h2 class="mx-auto mt-4 max-w-2xl font-display text-4xl leading-tight tracking-tight text-forest sm:text-6xl">Good food should never go to waste.<br /><em class="font-normal text-moss">Let's make sure it doesn't.</em></h2><div class="mt-9 flex flex-wrap justify-center gap-4"><button type="button" class="donate-trigger rounded-full bg-orange px-7 py-4 text-sm font-bold text-white transition hover:-translate-y-0.5 hover:bg-[#d97840]">I want to donate food</button><a href="#top" class="rounded-full border border-forest/25 px-7 py-4 text-sm font-bold text-forest transition hover:border-forest hover:bg-white">I represent an NGO</a></div><p id="donate-count" class="mt-4 text-sm text-forest/60"></p></section>
+      <section id="get-involved" class="mx-auto max-w-7xl px-6 py-24 text-center lg:px-10 lg:py-32"><p class="eyebrow">Join the movement</p><h2 class="mx-auto mt-4 max-w-2xl font-display text-4xl leading-tight tracking-tight text-forest sm:text-6xl">Good food should never go to waste.<br /><em class="font-normal text-moss">Let's make sure it doesn't.</em></h2><div class="mt-9 flex flex-wrap justify-center gap-4"><button type="button" class="donate-trigger rounded-full bg-orange px-7 py-4 text-sm font-bold text-[#fff] transition hover:-translate-y-0.5 hover:bg-[#d97840]">I want to donate food</button><a href="#how-it-works" class="rounded-full border border-forest/25 px-7 py-4 text-sm font-bold text-forest transition hover:border-forest hover:bg-white">I represent an NGO</a></div><p id="donate-count" class="mt-4 text-sm text-forest/60"></p></section>
     </main>
 
     <footer class="border-t border-forest/10"><div class="mx-auto flex max-w-7xl flex-col gap-4 px-6 py-8 text-sm text-forest/60 sm:flex-row sm:items-center sm:justify-between lg:px-10"><div class="flex items-center gap-2 font-display font-bold text-forest"><span class="h-2 w-2 rounded-full bg-orange"></span> RePlate</div><p>Good food deserves another plate.</p><p>&copy; 2026 RePlate</p></div></footer>
@@ -169,13 +212,16 @@
             </div>
           </div>
           <button type="submit" class="hero-btn-primary inline-flex w-full items-center justify-center gap-2 px-6 py-3 text-sm font-bold transition">Post this listing</button>
-          <p id="donate-toast" class="text-center text-sm font-semibold text-moss" hidden>Thank you — your listing is live. Nearby NGOs will be notified.</p>
         </form>
       </div>
     </dialog>
 
+    <div id="donate-toast" class="donate-toast glass-surface" role="status" aria-live="polite" hidden></div>
+
+    <script src="./theme.js" defer></script>
     <script src="./journey.js" defer></script>
     <script src="./how-glass.js" defer></script>
     <script src="./donate.js" defer></script>
+    <script src="./video.js" defer></script>
   </body>
 </html>
