@@ -15,6 +15,8 @@
   const cancelBtn = document.getElementById('donate-cancel');
   const toast = document.getElementById('donate-toast');
   const countLabel = document.getElementById('donate-count');
+  const titleCount = document.getElementById('donate-title-count');
+  const textInputs = [titleInput, quantityInput, addressInput];
 
   const DRAFT_KEY = 'replate:donation-draft';
   const LISTINGS_KEY = 'replate:donations';
@@ -37,6 +39,31 @@
     countLabel.textContent = count === 0
       ? 'Be the first to share a listing from this device.'
       : `You've shared ${count} listing${count === 1 ? '' : 's'} from this device.`;
+  }
+
+  // Each rule returns true when the value is fine, or the message to show under the field.
+  const rules = {
+    title: value => value.length >= 3 || 'Describe the food in at least 3 characters.',
+    quantity: value => /\d/.test(value) || 'Add a number, e.g. "Serves 15 people".',
+    address: value => value.length >= 5 || 'Add a pickup address so NGOs can find you.'
+  };
+
+  function showError(input, message) {
+    document.getElementById(`${input.id}-error`).textContent = message;
+    input.setAttribute('aria-invalid', String(Boolean(message)));
+  }
+
+  function validateField(input) {
+    const result = rules[input.name](input.value.trim());
+    const message = result === true ? '' : result;
+    showError(input, message);
+    return !message;
+  }
+
+  function updateTitleCount() {
+    const length = titleInput.value.length;
+    titleCount.textContent = `${length} / ${titleInput.maxLength}`;
+    titleCount.classList.toggle('near-limit', length > titleInput.maxLength - 10);
   }
 
   function saveDraft() {
@@ -75,6 +102,7 @@
       photoDataUrl = draft.photo;
       showPreview(photoDataUrl);
     }
+    updateTitleCount();
   }
 
   function resetFormState() {
@@ -85,6 +113,8 @@
     preview.removeAttribute('src');
     dropzoneHint.hidden = false;
     locationStatus.textContent = '';
+    textInputs.forEach(input => showError(input, ''));
+    updateTitleCount();
   }
 
   function showToast(message) {
@@ -161,6 +191,7 @@
         if (!addressInput.value.trim()) {
           addressInput.value = `Lat ${coords.lat.toFixed(4)}, Lng ${coords.lng.toFixed(4)} — feel free to replace with an address`;
         }
+        validateField(addressInput);
         saveDraft();
       },
       () => {
@@ -170,12 +201,26 @@
     );
   });
 
-  [titleInput, quantityInput, addressInput].forEach(input => {
-    input.addEventListener('input', saveDraft);
+  textInputs.forEach(input => {
+    const field = input.closest('.field');
+    input.addEventListener('input', () => {
+      saveDraft();
+      // Once a field has shown an error, re-check as the user types so the message clears the moment it is fixed.
+      if (input.getAttribute('aria-invalid') === 'true') validateField(input);
+    });
+    // focus/blur don't bubble, so each input gets its own listeners.
+    input.addEventListener('focus', () => field.classList.add('is-focused'));
+    input.addEventListener('blur', () => {
+      field.classList.remove('is-focused');
+      if (input.value.trim()) validateField(input);
+    });
   });
+
+  titleInput.addEventListener('input', updateTitleCount);
 
   function openDialog() {
     loadDraft();
+    textInputs.forEach(input => showError(input, ''));
     dialog.showModal();
     titleInput.focus();
   }
@@ -206,8 +251,9 @@
 
   form.addEventListener('submit', event => {
     event.preventDefault();
-    if (!titleInput.value.trim()) {
-      titleInput.focus();
+    const invalid = textInputs.filter(input => !validateField(input));
+    if (invalid.length) {
+      invalid[0].focus();
       return;
     }
     const listing = {

@@ -742,3 +742,151 @@ summary:focus-visible {
   letter-spacing: 0.22em;
   text-transform: uppercase;
 }
+
+/* Exercise 3 - event-driven states (classes toggled from donate.js / events.js) */
+.field label {
+  transition: color 200ms ease;
+}
+
+.field.is-focused label {
+  color: rgb(var(--c-orange));
+}
+
+.field-error {
+  color: #c0392b;
+  font-weight: 600;
+}
+
+.field-error:empty {
+  display: none;
+}
+
+#donate-form [aria-invalid="true"] {
+  border-color: #c0392b;
+}
+
+#donate-title-count.near-limit {
+  color: rgb(var(--c-orange));
+  font-weight: 700;
+}
+
+.step-card {
+  transition: opacity 250ms ease, transform 250ms ease;
+}
+
+.step-card.is-active {
+  transform: translateY(-6px);
+}
+
+.step-card.is-dimmed {
+  opacity: 0.45;
+}
+
+:root[data-theme="dark"] .field-error {
+  color: #f08a7e;
+}
+
+:root[data-theme="dark"] #donate-form [aria-invalid="true"] {
+  border-color: #f08a7e;
+}
+
+/* Welcome notification - sits under the sticky nav, aligned to the page's right edge. */
+.welcome-toast {
+  position: fixed;
+  top: 6.25rem;
+  right: max(1.5rem, calc((100vw - 80rem) / 2 + 2.5rem));
+  z-index: 40;
+  display: flex;
+  align-items: flex-start;
+  gap: 0.85rem;
+  width: min(22rem, calc(100vw - 2rem));
+  padding: 0.95rem 0.95rem 0.95rem 1rem;
+  border-radius: 1.25rem;
+  color: rgb(var(--c-forest));
+}
+
+.welcome-toast-icon {
+  display: inline-flex;
+  flex: 0 0 auto;
+  align-items: center;
+  justify-content: center;
+  width: 2.25rem;
+  height: 2.25rem;
+  border-radius: 999px;
+  background: rgb(var(--c-forest));
+  color: rgb(var(--c-cream));
+}
+
+.welcome-toast-icon svg {
+  width: 1.1rem;
+  height: 1.1rem;
+}
+
+.welcome-toast-title {
+  font-family: var(--font-serif);
+  font-size: 1.05rem;
+  line-height: 1.3;
+}
+
+.welcome-toast-body {
+  margin-top: 0.15rem;
+  color: var(--text-muted);
+  font-size: 0.8rem;
+  line-height: 1.4;
+}
+
+.welcome-toast-action {
+  margin-top: 0.5rem;
+  color: rgb(var(--c-orange));
+  font-size: 0.8rem;
+  font-weight: 700;
+}
+
+.welcome-toast-action:hover {
+  text-decoration: underline;
+}
+
+.welcome-toast-close {
+  display: inline-flex;
+  flex: 0 0 auto;
+  align-items: center;
+  justify-content: center;
+  width: 1.75rem;
+  height: 1.75rem;
+  border-radius: 999px;
+  color: var(--text-muted);
+  transition: background 200ms ease, color 200ms ease;
+}
+
+.welcome-toast-close:hover {
+  background: rgb(var(--c-forest) / 0.08);
+  color: rgb(var(--c-forest));
+}
+
+.welcome-toast-close svg {
+  width: 0.9rem;
+  height: 0.9rem;
+}
+
+@media (max-width: 767px) {
+  .welcome-toast {
+    top: 5.75rem;
+    right: 1rem;
+  }
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .welcome-toast:not([hidden]) {
+    animation: welcome-in 320ms cubic-bezier(.2, .8, .2, 1) both;
+  }
+  .welcome-toast.is-leaving {
+    animation: welcome-out 220ms ease-in both;
+  }
+  @keyframes welcome-in {
+    from { opacity: 0; transform: translateY(-10px) scale(.98); }
+    to { opacity: 1; transform: none; }
+  }
+  @keyframes welcome-out {
+    to { opacity: 0; transform: translateY(-8px); }
+  }
+}
