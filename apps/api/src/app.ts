@@ -5,8 +5,13 @@ import { rateLimit } from 'express-rate-limit';
 import { pinoHttp } from 'pino-http';
 import { env } from './env.ts';
 import { logger } from './logger.ts';
+import { requireAuth } from './middleware/auth.ts';
 import { errorHandler, notFound } from './middleware/errors.ts';
+import { adminRouter } from './routes/admin.ts';
+import { donationsRouter } from './routes/donations.ts';
+import { geocodeRouter } from './routes/geocode.ts';
 import { healthRouter } from './routes/health.ts';
+import { meRouter } from './routes/me.ts';
 
 export function createApp() {
   const app = express();
@@ -28,6 +33,13 @@ export function createApp() {
   app.use(pinoHttp({ logger }));
 
   app.use('/api/health', healthRouter);
+
+  // Everything below needs a signed-in user.
+  app.use('/api', requireAuth);
+  app.use('/api/me', meRouter);
+  app.use('/api/donations', donationsRouter);
+  app.use('/api/geocode', geocodeRouter);
+  app.use('/api/admin', adminRouter);
 
   app.use(notFound);
   app.use(errorHandler);

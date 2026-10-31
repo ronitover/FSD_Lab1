@@ -3,3 +3,4 @@ dist/
 package-lock.json
 *.pdf
 *.zip
+apps/api/src/db/database.types.ts

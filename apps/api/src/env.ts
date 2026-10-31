@@ -14,6 +14,14 @@ const schema = z.object({
         .map((origin) => origin.trim())
         .filter(Boolean),
     ),
+  SUPABASE_URL: z.url(),
+  // The server never needs the secret key: every query runs as the signed-in user.
+  SUPABASE_PUBLISHABLE_KEY: z.string().min(1),
+  // Nominatim's usage policy asks for an identifying User-Agent with a way to reach the operator.
+  NOMINATIM_URL: z.url().default('https://nominatim.openstreetmap.org'),
+  NOMINATIM_CONTACT: z.string().trim().min(1).default('RePlate (contact not configured)'),
+  // Comma-separated ISO country codes to restrict address search to, e.g. "in". Empty searches worldwide.
+  NOMINATIM_COUNTRY_CODES: z.string().trim().default(''),
 });
 
 export type Env = z.infer<typeof schema>;

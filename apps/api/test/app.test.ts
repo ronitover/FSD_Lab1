@@ -18,9 +18,14 @@ describe('API basics', () => {
   });
 
   it('returns a JSON 404 for unknown routes', async () => {
-    const res = await request(app).get('/api/nope');
+    const res = await request(app).get('/nope');
     expect(res.status).toBe(404);
     expect(res.body.error.code).toBe('NOT_FOUND');
+  });
+
+  it('asks for sign-in before revealing whether an API route exists', async () => {
+    const res = await request(app).get('/api/nope');
+    expect(res.status).toBe(401);
   });
 
   it('rejects malformed JSON with a 400', async () => {

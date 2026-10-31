@@ -36,11 +36,48 @@ supabase login
 supabase link --project-ref <project-ref>   # from the dashboard URL
 supabase db push --linked                   # applies any new migrations
 npm run db:check -w @replate/api            # checks the access rules with throwaway accounts
+npm run db:types                            # regenerates apps/api/src/db/database.types.ts
 ```
 
 Fill in the Supabase URL and keys in both `.env` files from Project Settings → API Keys. Run `db:check` against the dev project only: it creates and deletes test users.
 
-New NGO accounts start as `pending` and can't browse or claim until an admin verifies them.
+New NGO accounts start as `pending` and can't browse or claim until an admin verifies them. Admins are promoted by hand in the Supabase SQL editor: `update profiles set role = 'admin' where id = '<user id>';`
+
+## API
+
+All routes except `/api/health` need a Supabase access token: `Authorization: Bearer <token>`. The API queries Supabase as that user, so the database's access rules apply to every request. Errors always look like `{ "error": { "code", "message" } }`.
+
+| Method and path                                                           | Who    | Does                                                                             |
+| ------------------------------------------------------------------------- | ------ | -------------------------------------------------------------------------------- |
+| `GET /api/me`, `PATCH /api/me`                                            | Anyone | Own profile                                                                      |
+| `PATCH /api/me/ngo`                                                       | NGO    | Service radius                                                                   |
+| `POST /api/donations`                                                     | Donor  | Create a donation                                                                |
+| `GET /api/donations/mine?q=&status=`                                      | Donor  | Own donations, with search and status filter                                     |
+| `GET /api/donations/:id`                                                  | Both   | One donation, its status history, and the other party once claimed               |
+| `PATCH /api/donations/:id`                                                | Donor  | Edit while available                                                             |
+| `DELETE /api/donations/:id`                                               | Donor  | Delete unless claimed or collected                                               |
+| `POST /api/donations/:id/cancel`                                          | Donor  | Cancel before collection                                                         |
+| `GET /api/donations/nearby?lat=&lng=&radiusKm=&q=&category=&dietaryType=` | NGO    | Open donations nearby, nearest first                                             |
+| `POST /api/donations/:id/claim`                                           | NGO    | Claim (only one NGO can win)                                                     |
+| `POST /api/donations/:id/release`                                         | NGO    | Give a claim back                                                                |
+| `POST /api/donations/:id/collect`                                         | NGO    | Mark collected                                                                   |
+| `GET /api/donations/claimed?status=`                                      | NGO    | Own pickups                                                                      |
+| `GET /api/geocode?q=`, `GET /api/geocode/reverse?lat=&lng=`               | Anyone | Address search (OpenStreetMap Nominatim, cached and limited to 1 request/second) |
+| `GET /api/admin/ngos?verification=`                                       | Admin  | NGOs, e.g. the pending queue                                                     |
+| `POST /api/admin/ngos/:id/verification`                                   | Admin  | Verify or reject an NGO                                                          |
+
+`npm run api:check -w @replate/api` walks the whole flow over HTTP against the dev project with throwaway accounts.
+
+## Troubleshooting
+
+**`fetch failed` / `UNABLE_TO_VERIFY_LEAF_SIGNATURE` on campus or office Wi-Fi.** Some networks (for example Sophos firewalls) inspect HTTPS by re-signing certificates with their own authority. macOS trusts it, Node.js does not. Export the authority from your keychain and point Node at it:
+
+```bash
+security find-certificate -a -c "Sophos" -p > ~/.network-ca.pem
+echo 'export NODE_EXTRA_CA_CERTS="$HOME/.network-ca.pem"' >> ~/.zshrc
+```
+
+Never work around it by turning off certificate checks.
 
 ## Scripts
 
@@ -55,6 +92,7 @@ Run from the repository root.
 | `npm run lint`      | Lints with oxlint                                      |
 | `npm run format`    | Formats with Prettier                                  |
 | `npm run check`     | Everything CI runs: lint, format, types, tests, build  |
+| `npm run db:types`  | Regenerates database types after a migration           |
 
 ## Environment variables
 
