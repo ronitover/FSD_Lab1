@@ -1,0 +1,53 @@
+/* RePlate colour tokens, carried over from the Part 1 site. Tailwind takes these over in Phase 3. */
+:root {
+  --c-cream: 247 245 239;
+  --c-forest: 23 59 42;
+  --c-moss: 73 106 76;
+  --c-orange: 232 137 79;
+  --c-ink: 32 53 42;
+  color-scheme: light dark;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    --c-cream: 13 22 17;
+    --c-forest: 227 236 224;
+    --c-moss: 146 190 150;
+    --c-ink: 214 226 211;
+  }
+}
+
+body {
+  margin: 0;
+  min-height: 100vh;
+  display: grid;
+  place-items: center;
+  background: rgb(var(--c-cream));
+  color: rgb(var(--c-ink));
+  font-family: ui-sans-serif, system-ui, sans-serif;
+}
+
+main {
+  padding: 0 16px;
+  text-align: center;
+}
+
+h1 {
+  margin: 0;
+  font-family: Georgia, Cambria, serif;
+  font-size: 3rem;
+  color: rgb(var(--c-forest));
+}
+
+em {
+  color: rgb(var(--c-moss));
+}
+
+.status {
+  margin-top: 1rem;
+  font-size: 0.875rem;
+}
+
+.status[data-state='down'] {
+  color: rgb(var(--c-orange));
+}

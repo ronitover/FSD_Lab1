@@ -1,0 +1,5 @@
+legacy/
+dist/
+package-lock.json
+*.pdf
+*.zip
