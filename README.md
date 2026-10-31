@@ -19,13 +19,28 @@ Requires Node 22 or newer (`.nvmrc` pins 24).
 
 ```bash
 npm install
-cp apps/api/.env.example apps/api/.env
+cp apps/api/.env.example apps/api/.env      # copy, don't rename: the examples are committed
 cp apps/web/.env.example apps/web/.env.local
 npm run dev
 ```
 
 - Web app: http://localhost:5173
 - API: http://localhost:5001 (the web dev server forwards `/api` to it)
+
+## Database (Supabase)
+
+The schema lives in `supabase/migrations` and is applied with the [Supabase CLI](https://supabase.com/docs/guides/local-development/cli/getting-started):
+
+```bash
+supabase login
+supabase link --project-ref <project-ref>   # from the dashboard URL
+supabase db push --linked                   # applies any new migrations
+npm run db:check -w @replate/api            # checks the access rules with throwaway accounts
+```
+
+Fill in the Supabase URL and keys in both `.env` files from Project Settings → API Keys. Run `db:check` against the dev project only: it creates and deletes test users.
+
+New NGO accounts start as `pending` and can't browse or claim until an admin verifies them.
 
 ## Scripts
 

@@ -7,7 +7,7 @@ coverage/
 # Secrets: only the .env.example files are committed
 .env
 .env.*
-!.env.example
+.env.example
 
 # Logs and OS/editor files
 *.log
@@ -20,3 +20,5 @@ coverage/
 AI_USAGE.md
 Lab Exercise 5 & 6_ Domain-Based React Application.pdf
 Second-Serve-main.zip
+
+/Users/ronitover/FSD Lab-1/apps/api/.env.example
