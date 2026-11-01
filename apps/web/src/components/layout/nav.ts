@@ -7,7 +7,11 @@ export interface NavItem {
 
 /** The main navigation for each role. */
 export const NAV_BY_ROLE: Record<Role, NavItem[]> = {
-  donor: [{ to: '/donor', label: 'Dashboard' }],
+  donor: [
+    { to: '/donor', label: 'Dashboard' },
+    { to: '/donor/donations', label: 'My donations' },
+    { to: '/donor/donations/new', label: 'Donate food' },
+  ],
   ngo: [{ to: '/ngo', label: 'Dashboard' }],
   admin: [{ to: '/admin', label: 'NGO verification' }],
 };

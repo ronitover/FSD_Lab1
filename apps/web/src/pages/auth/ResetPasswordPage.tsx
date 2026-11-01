@@ -9,7 +9,7 @@ import { TextField } from '../../components/ui/FormField.tsx';
 import { useToast } from '../../components/ui/toast-context.ts';
 import { authErrorMessage } from '../../lib/authErrors.ts';
 import { fieldErrors, type FieldErrors } from '../../lib/forms.ts';
-import { supabase } from '../../lib/supabase.ts';
+import { auth as authClient } from '../../lib/supabase.ts';
 
 interface NewPasswordValues {
   password: string;
@@ -60,7 +60,7 @@ export function ResetPasswordPage() {
     }
 
     setSubmitting(true);
-    const { error } = await supabase.auth.updateUser({ password: parsed.data.password });
+    const { error } = await authClient.updateUser({ password: parsed.data.password });
     setSubmitting(false);
     if (error) {
       setFormError(authErrorMessage(error));

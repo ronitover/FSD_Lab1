@@ -7,7 +7,7 @@ import { Alert } from '../../components/ui/Feedback.tsx';
 import { TextField } from '../../components/ui/FormField.tsx';
 import { authErrorMessage } from '../../lib/authErrors.ts';
 import { fieldErrors, type FieldErrors } from '../../lib/forms.ts';
-import { supabase } from '../../lib/supabase.ts';
+import { auth } from '../../lib/supabase.ts';
 
 interface SignInValues {
   email: string;
@@ -35,7 +35,7 @@ export function SignInPage() {
     }
 
     setSubmitting(true);
-    const { error } = await supabase.auth.signInWithPassword(parsed.data);
+    const { error } = await auth.signInWithPassword(parsed.data);
     setSubmitting(false);
     // On success the auth state changes and <RedirectIfSignedIn> moves on to the dashboard.
     if (error) setFormError(authErrorMessage(error));

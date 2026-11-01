@@ -8,7 +8,7 @@ import { TextField } from '../../components/ui/FormField.tsx';
 import { RadioGroup, type RadioOption } from '../../components/ui/RadioGroup.tsx';
 import { authErrorMessage } from '../../lib/authErrors.ts';
 import { fieldErrors, type FieldErrors } from '../../lib/forms.ts';
-import { supabase } from '../../lib/supabase.ts';
+import { auth } from '../../lib/supabase.ts';
 import { CheckEmail } from './CheckEmail.tsx';
 
 interface SignUpValues {
@@ -65,7 +65,7 @@ export function SignUpPage() {
 
     const { email, password, role, displayName, phone, registrationNumber } = parsed.data;
     setSubmitting(true);
-    const { data, error } = await supabase.auth.signUp({
+    const { data, error } = await auth.signUp({
       email,
       password,
       options: {

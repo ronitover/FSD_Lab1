@@ -1,5 +1,5 @@
 import { createContext, useContext } from 'react';
-import type { Session } from '@supabase/supabase-js';
+import type { Session } from '@supabase/auth-js';
 import type { Me, Role } from '@replate/shared';
 
 export type AuthState =

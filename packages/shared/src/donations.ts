@@ -39,23 +39,28 @@ const optionalText = (max: number) =>
     .transform((value) => value || null)
     .nullish();
 
-const timestamp = z.iso.datetime({ offset: true });
+const timestamp = (message = 'Enter a valid date and time.') =>
+  z.iso.datetime({ offset: true, message });
 
 const donationFields = z.object({
   title: z.string().trim().min(3, 'Describe the food in at least 3 characters.').max(120),
   description: optionalText(1000),
-  category: z.enum(FOOD_CATEGORIES),
-  dietaryType: z.enum(DIETARY_TYPES),
-  quantity: z.number().int().min(1).max(100_000),
+  category: z.enum(FOOD_CATEGORIES, 'Choose a category.'),
+  dietaryType: z.enum(DIETARY_TYPES, 'Choose veg, non-veg or vegan.'),
+  quantity: z
+    .number('Enter how much food there is.')
+    .int('Use a whole number.')
+    .min(1, 'Must be at least 1.')
+    .max(100_000, 'That is more than one listing can hold.'),
   quantityUnit: z.enum(QUANTITY_UNITS).default('servings'),
   allergens: z.array(z.string().trim().min(1).max(40)).max(20).default([]),
   needsRefrigeration: z.boolean().default(false),
-  preparedAt: timestamp.nullish(),
-  pickupFrom: timestamp.optional(),
-  expiresAt: timestamp,
+  preparedAt: timestamp().nullish(),
+  pickupFrom: timestamp().optional(),
+  expiresAt: timestamp('Choose when the food should be collected by.'),
   pickupAddress: z.string().trim().min(5, 'Add a pickup address so NGOs can find you.').max(300),
-  pickupLat: z.number().min(-90).max(90),
-  pickupLng: z.number().min(-180).max(180),
+  pickupLat: z.number('Mark the pickup location on the map.').min(-90).max(90),
+  pickupLng: z.number('Mark the pickup location on the map.').min(-180).max(180),
   pickupNotes: optionalText(500),
 });
 

@@ -1,6 +1,6 @@
 import type { ApiError } from '@replate/shared';
 import { config } from '../config.ts';
-import { supabase } from './supabase.ts';
+import { auth } from './supabase.ts';
 
 /** An error from the API, carrying its status and code so screens can react to specific cases. */
 export class ApiRequestError extends Error {
@@ -24,7 +24,7 @@ interface RequestOptions {
 /** Calls the RePlate API as the signed-in user. `path` is relative to /api, e.g. `/me`. */
 export async function api<T>(path: string, { method = 'GET', body, signal }: RequestOptions = {}) {
   // getSession refreshes the access token first if it has expired.
-  const { data } = await supabase.auth.getSession();
+  const { data } = await auth.getSession();
   const token = data.session?.access_token;
 
   const headers: Record<string, string> = { Accept: 'application/json' };
@@ -50,7 +50,7 @@ export async function api<T>(path: string, { method = 'GET', body, signal }: Req
   if (!res.ok) {
     const error = (payload as Partial<ApiError> | null)?.error;
     // A rejected token means the session is gone (revoked, or the user was deleted): sign out locally.
-    if (res.status === 401 && token) void supabase.auth.signOut({ scope: 'local' });
+    if (res.status === 401 && token) void auth.signOut({ scope: 'local' });
     throw new ApiRequestError(
       res.status,
       error?.code ?? 'HTTP_ERROR',

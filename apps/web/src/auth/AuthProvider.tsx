@@ -1,9 +1,9 @@
 import { useEffect, useMemo, useState, type ReactNode } from 'react';
 import { useQuery, useQueryClient } from '@tanstack/react-query';
-import type { Session } from '@supabase/supabase-js';
+import type { Session } from '@supabase/auth-js';
 import type { Me } from '@replate/shared';
 import { api } from '../lib/api.ts';
-import { supabase } from '../lib/supabase.ts';
+import { auth } from '../lib/supabase.ts';
 import { AuthContext, ME_QUERY_KEY, type AuthContextValue, type AuthState } from './context.ts';
 
 export function AuthProvider({ children }: { children: ReactNode }) {
@@ -13,8 +13,8 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   const userId = session?.user.id;
 
   useEffect(() => {
-    void supabase.auth.getSession().then(({ data }) => setSession(data.session));
-    const { data } = supabase.auth.onAuthStateChange((_event, next) => {
+    void auth.getSession().then(({ data }) => setSession(data.session));
+    const { data } = auth.onAuthStateChange((_event, next) => {
       setSession(next);
       // Never show one account's data to the next person on this browser.
       if (!next) queryClient.clear();
@@ -41,7 +41,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     return {
       ...state,
       signOut: async () => {
-        await supabase.auth.signOut();
+        await auth.signOut();
       },
     };
   }, [session, me]);

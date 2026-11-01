@@ -4,7 +4,7 @@ import { AuthCard } from '../../components/layout/AuthCard.tsx';
 import { Button } from '../../components/ui/Button.tsx';
 import { Alert } from '../../components/ui/Feedback.tsx';
 import { authErrorMessage } from '../../lib/authErrors.ts';
-import { supabase } from '../../lib/supabase.ts';
+import { auth } from '../../lib/supabase.ts';
 
 export function CheckEmail({ email }: { email: string }) {
   const [state, setState] = useState<'idle' | 'sending' | 'sent'>('idle');
@@ -13,7 +13,7 @@ export function CheckEmail({ email }: { email: string }) {
   async function resend() {
     setState('sending');
     setError(null);
-    const { error: resendError } = await supabase.auth.resend({
+    const { error: resendError } = await auth.resend({
       type: 'signup',
       email,
       options: { emailRedirectTo: `${window.location.origin}/signin` },

@@ -7,7 +7,7 @@ import { Alert } from '../../components/ui/Feedback.tsx';
 import { TextField } from '../../components/ui/FormField.tsx';
 import { authErrorMessage } from '../../lib/authErrors.ts';
 import { fieldErrors } from '../../lib/forms.ts';
-import { supabase } from '../../lib/supabase.ts';
+import { auth } from '../../lib/supabase.ts';
 
 export function ForgotPasswordPage() {
   const [email, setEmail] = useState('');
@@ -26,7 +26,7 @@ export function ForgotPasswordPage() {
     }
 
     setSubmitting(true);
-    const { error } = await supabase.auth.resetPasswordForEmail(parsed.data.email, {
+    const { error } = await auth.resetPasswordForEmail(parsed.data.email, {
       redirectTo: `${window.location.origin}/reset-password`,
     });
     setSubmitting(false);

@@ -1,4 +1,4 @@
-import { AuthError } from '@supabase/supabase-js';
+import { AuthError } from '@supabase/auth-js';
 
 const MESSAGES: Record<string, string> = {
   invalid_credentials: 'The email or password is incorrect.',
