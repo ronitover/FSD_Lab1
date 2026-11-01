@@ -15,6 +15,9 @@ interface PickupLocationFieldProps {
   onLocationChange: (location: LatLng) => void;
   addressError?: string;
   locationError?: string;
+  label?: string;
+  hint?: string;
+  required?: boolean;
 }
 
 /**
@@ -28,6 +31,9 @@ export function PickupLocationField({
   onLocationChange,
   addressError,
   locationError,
+  label = 'Pickup address',
+  hint = 'Type the address, then find it on the map.',
+  required = true,
 }: PickupLocationFieldProps) {
   const [searchTerm, setSearchTerm] = useState('');
   const [showResults, setShowResults] = useState(false);
@@ -80,7 +86,7 @@ export function PickupLocationField({
       <div className="flex flex-col gap-3 sm:flex-row sm:items-start">
         <TextField
           className="flex-1"
-          label="Pickup address"
+          label={label}
           autoComplete="street-address"
           value={address}
           onChange={onAddressChange}
@@ -92,9 +98,10 @@ export function PickupLocationField({
             }
           }}
           error={addressError}
-          hint="Type the address, then find it on the map."
+          hint={hint}
           maxLength={MAX_ADDRESS_LENGTH}
-          required
+          optional={!required}
+          required={required}
         />
         <Button
           variant="secondary"

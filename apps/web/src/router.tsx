@@ -6,7 +6,6 @@ import { ForgotPasswordPage } from './pages/auth/ForgotPasswordPage.tsx';
 import { ResetPasswordPage } from './pages/auth/ResetPasswordPage.tsx';
 import { SignInPage } from './pages/auth/SignInPage.tsx';
 import { SignUpPage } from './pages/auth/SignUpPage.tsx';
-import { DashboardPlaceholder } from './pages/DashboardPlaceholder.tsx';
 import { LandingPage } from './pages/LandingPage.tsx';
 import { RequireVerifiedNgo } from './pages/ngo/RequireVerifiedNgo.tsx';
 import { NotFoundPage } from './pages/NotFoundPage.tsx';
@@ -63,6 +62,12 @@ export const router = createBrowserRouter([
         element: <RequireAuth />,
         children: [
           {
+            path: 'account',
+            lazy: async () => ({
+              Component: (await import('./pages/account/AccountPage.tsx')).AccountPage,
+            }),
+          },
+          {
             path: 'donations/:id',
             lazy: async () => ({
               Component: (await import('./pages/donations/DonationDetailPage.tsx'))
@@ -95,7 +100,14 @@ export const router = createBrowserRouter([
       },
       {
         element: <RequireAuth roles={['admin']} />,
-        children: [{ path: 'admin', element: <DashboardPlaceholder /> }],
+        children: [
+          {
+            path: 'admin',
+            lazy: async () => ({
+              Component: (await import('./pages/admin/AdminNgosPage.tsx')).AdminNgosPage,
+            }),
+          },
+        ],
       },
       { path: '*', element: <NotFoundPage /> },
     ],

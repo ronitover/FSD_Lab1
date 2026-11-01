@@ -56,10 +56,14 @@ export function AppLayout() {
             <ThemeToggle />
             {me ? (
               <>
-                <div className="hidden text-right md:block">
+                <Link
+                  to="/account"
+                  className="hidden rounded-xl px-2 py-1 text-right hover:bg-forest/5 md:block"
+                  aria-label={`Your profile (${me.displayName})`}
+                >
                   <p className="text-sm font-semibold text-forest">{me.displayName}</p>
-                  <p className="text-xs text-forest/55">{ROLE_LABELS[me.role]}</p>
-                </div>
+                  <p className="text-xs text-forest/55">{ROLE_LABELS[me.role]} · Profile</p>
+                </Link>
                 <button
                   type="button"
                   onClick={() => void signOut()}
@@ -132,6 +136,9 @@ export function AppLayout() {
                   {item.label}
                 </NavLink>
               ))}
+              <NavLink to="/account" className={navLinkClasses} onClick={() => setMenuOpen(false)}>
+                Profile
+              </NavLink>
               <button
                 type="button"
                 onClick={() => void signOut()}

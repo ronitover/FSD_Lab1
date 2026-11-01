@@ -17,7 +17,11 @@ const nullableText = (max: number) =>
 
 export const profileUpdateSchema = z
   .object({
-    displayName: z.string().trim().min(2).max(120),
+    displayName: z
+      .string()
+      .trim()
+      .min(2, 'Enter at least 2 characters.')
+      .max(120, 'Keep the name under 120 characters.'),
     phone: z
       .string()
       .trim()
