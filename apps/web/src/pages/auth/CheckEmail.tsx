@@ -36,7 +36,10 @@ export function CheckEmail({ email }: { email: string }) {
         </>
       }
       footer={
-        <Link to="/signin" className="font-semibold text-moss underline-offset-4 hover:underline">
+        <Link
+          to="/signin"
+          className="inline-block py-1 font-semibold text-moss underline-offset-4 hover:underline"
+        >
           Back to sign in
         </Link>
       }

@@ -73,7 +73,7 @@ function DonationDetailView({ donation }: { donation: DonationDetail }) {
       <title>{`${donation.title} · RePlate`}</title>
       <Link
         to={back.to}
-        className="text-sm font-semibold text-moss underline-offset-4 hover:underline"
+        className="text-sm inline-block py-1 font-semibold text-moss underline-offset-4 hover:underline"
       >
         <span aria-hidden="true">←</span> {back.label}
       </Link>
@@ -138,7 +138,7 @@ function DonationDetailView({ donation }: { donation: DonationDetail }) {
         )}
       </header>
 
-      <div className="mt-8 grid gap-6 lg:grid-cols-[1.4fr_1fr]">
+      <div className="mt-8 grid grid-cols-1 gap-6 lg:grid-cols-[minmax(0,1.4fr)_minmax(0,1fr)]">
         <div className="space-y-6">
           {donation.contact && (
             <Card title={isOwner ? 'Claimed by' : 'Donor'}>
@@ -146,7 +146,7 @@ function DonationDetailView({ donation }: { donation: DonationDetail }) {
               {donation.contact.phone && (
                 <a
                   href={`tel:${donation.contact.phone.replace(/[^\d+]/g, '')}`}
-                  className="mt-1 inline-block font-semibold text-moss underline-offset-4 hover:underline"
+                  className="mt-1 inline-block inline-block py-1 font-semibold text-moss underline-offset-4 hover:underline"
                 >
                   {donation.contact.phone}
                 </a>
@@ -212,7 +212,7 @@ function DonationDetailView({ donation }: { donation: DonationDetail }) {
               href={`https://www.openstreetmap.org/?mlat=${donation.pickupLat}&mlon=${donation.pickupLng}#map=17/${donation.pickupLat}/${donation.pickupLng}`}
               target="_blank"
               rel="noreferrer"
-              className="mt-3 inline-block text-sm font-semibold text-moss underline-offset-4 hover:underline"
+              className="mt-3 inline-block text-sm inline-block py-1 font-semibold text-moss underline-offset-4 hover:underline"
             >
               Open in OpenStreetMap <span aria-hidden="true">↗</span>
             </a>

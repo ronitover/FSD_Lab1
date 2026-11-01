@@ -53,10 +53,10 @@ export function DonorDashboardPage() {
               <Link
                 key={stat.status}
                 to={`/donor/donations?status=${stat.status}`}
-                className="rounded-3xl bg-surface p-4 shadow-soft transition hover:-translate-y-0.5 sm:p-6"
+                className="flex flex-col justify-between gap-2 rounded-3xl bg-surface p-4 shadow-soft transition hover:-translate-y-0.5 sm:p-6"
               >
                 <dt className="text-xs font-semibold text-forest/60 sm:text-sm">{stat.label}</dt>
-                <dd className="mt-2 font-display text-3xl text-forest sm:text-4xl">
+                <dd className="font-display text-3xl text-forest sm:text-4xl">
                   {count(stat.status)}
                 </dd>
               </Link>
@@ -101,7 +101,7 @@ export function DonorDashboardPage() {
                     </h2>
                     <Link
                       to="/donor/donations"
-                      className="text-sm font-semibold text-moss underline-offset-4 hover:underline"
+                      className="text-sm inline-block py-1 font-semibold text-moss underline-offset-4 hover:underline"
                     >
                       See all
                     </Link>

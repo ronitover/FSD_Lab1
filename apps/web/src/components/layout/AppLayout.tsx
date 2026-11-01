@@ -64,13 +64,15 @@ export function AppLayout() {
                   <p className="text-sm font-semibold text-forest">{me.displayName}</p>
                   <p className="text-xs text-forest/55">{ROLE_LABELS[me.role]} · Profile</p>
                 </Link>
-                <button
-                  type="button"
-                  onClick={() => void signOut()}
-                  className={`${buttonClasses('secondary', 'sm')} hidden md:inline-flex`}
-                >
-                  Sign out
-                </button>
+                <div className="hidden md:block">
+                  <button
+                    type="button"
+                    onClick={() => void signOut()}
+                    className={buttonClasses('secondary', 'sm')}
+                  >
+                    Sign out
+                  </button>
+                </div>
                 <button
                   type="button"
                   onClick={() => setMenuOpen((open) => !open)}
@@ -102,12 +104,11 @@ export function AppLayout() {
                   <Link to="/signin" className={buttonClasses('ghost', 'md')}>
                     Sign in
                   </Link>
-                  <Link
-                    to="/signup"
-                    className={`${buttonClasses('primary', 'md')} hidden sm:inline-flex`}
-                  >
-                    Get started
-                  </Link>
+                  <div className="hidden sm:block">
+                    <Link to="/signup" className={buttonClasses('primary', 'md')}>
+                      Get started
+                    </Link>
+                  </div>
                 </>
               )
             )}

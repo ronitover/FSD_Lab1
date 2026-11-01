@@ -48,7 +48,10 @@ export function SignInPage() {
       footer={
         <>
           New to RePlate?{' '}
-          <Link to="/signup" className="font-semibold text-moss underline-offset-4 hover:underline">
+          <Link
+            to="/signup"
+            className="inline-block py-1 font-semibold text-moss underline-offset-4 hover:underline"
+          >
             Create an account
           </Link>
         </>
@@ -78,7 +81,7 @@ export function SignInPage() {
         <div className="flex items-center justify-between gap-4">
           <Link
             to="/forgot-password"
-            className="text-sm font-semibold text-moss underline-offset-4 hover:underline"
+            className="text-sm inline-block py-1 font-semibold text-moss underline-offset-4 hover:underline"
           >
             Forgot password?
           </Link>

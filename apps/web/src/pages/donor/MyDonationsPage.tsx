@@ -47,7 +47,7 @@ export function MyDonationsPage() {
         </Link>
       </div>
 
-      <div className="mt-6 grid gap-3 sm:grid-cols-[1fr_14rem] sm:items-end">
+      <div className="mt-6 grid grid-cols-1 gap-3 sm:grid-cols-[minmax(0,1fr)_14rem] sm:items-end">
         <SearchBar
           label="Search your donations"
           placeholder="Search by title, description or address"

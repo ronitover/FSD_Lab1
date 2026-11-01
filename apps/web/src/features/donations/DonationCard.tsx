@@ -29,7 +29,7 @@ export function DonationCard({ donation }: { donation: Donation }) {
         </p>
         <p className="text-xs text-forest/55">
           {open
-            ? `Collect by ${formatRelative(donation.expiresAt)}`
+            ? `Collect ${formatRelative(donation.expiresAt)}`
             : `Listed ${formatRelative(donation.createdAt)}`}
         </p>
       </div>

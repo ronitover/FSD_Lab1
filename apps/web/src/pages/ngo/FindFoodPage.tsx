@@ -165,7 +165,7 @@ export function FindFoodPage() {
       {header}
 
       <div className="mt-6 flex flex-wrap items-center gap-x-4 gap-y-2 rounded-2xl bg-surface px-4 py-3 text-sm shadow-soft">
-        <p className="min-w-0 flex-1 truncate text-forest/75">
+        <p className="line-clamp-2 min-w-0 basis-full text-forest/75 sm:line-clamp-1 sm:flex-1 sm:basis-0">
           Searching within <strong className="text-forest">{radiusKm} km</strong> of{' '}
           <strong className="text-forest">{origin.label}</strong>
         </p>
@@ -186,17 +186,19 @@ export function FindFoodPage() {
         </div>
       </div>
 
-      <div className="mt-4 grid gap-3 sm:grid-cols-2 lg:grid-cols-[1fr_12rem_10rem_9rem] lg:items-end">
-        <SearchBar
-          label="Search donations"
-          placeholder="Search by food, description or area"
-          value={q}
-          onSearch={(value) => setParam('q', value)}
-        />
+      <div className="mt-4 grid grid-cols-2 items-end gap-3 sm:grid-cols-3 lg:grid-cols-[minmax(0,1fr)_12rem_10rem_9rem]">
+        <div className="col-span-2 sm:col-span-3 lg:col-span-1">
+          <SearchBar
+            label="Search donations"
+            placeholder="Search by food, description or area"
+            value={q}
+            onSearch={(value) => setParam('q', value)}
+          />
+        </div>
         <SelectField
           label="Category"
           options={CATEGORY_OPTIONS}
-          placeholder="Any category"
+          placeholder="Any"
           value={category ?? ''}
           onChange={(value) => setParam('category', value)}
         />
@@ -208,6 +210,7 @@ export function FindFoodPage() {
           onChange={(value) => setParam('dietaryType', value)}
         />
         <SelectField
+          className="col-span-2 sm:col-span-1"
           label="Distance"
           options={RADIUS_CHOICES.map((km) => ({ value: String(km), label: `${km} km` }))}
           value={String(radiusKm)}
@@ -219,7 +222,7 @@ export function FindFoodPage() {
           Your default is {savedRadius} km.{' '}
           <button
             type="button"
-            className="font-semibold text-moss underline-offset-4 hover:underline"
+            className="inline-block py-1 font-semibold text-moss underline-offset-4 hover:underline"
             onClick={() => void saveRadius()}
             disabled={saveSettings.isPending}
           >
@@ -245,7 +248,7 @@ export function FindFoodPage() {
         ))}
       </div>
 
-      <div className="mt-4 grid gap-6 lg:mt-6 lg:grid-cols-[1fr_1.1fr]">
+      <div className="mt-4 grid grid-cols-1 gap-6 lg:mt-6 lg:grid-cols-[minmax(0,1fr)_minmax(0,1.1fr)]">
         <div className={view === 'map' ? 'hidden lg:block' : ''} aria-busy={nearby.isFetching}>
           {nearby.isPending ? (
             <div className="grid place-items-center py-20 text-moss">
@@ -286,7 +289,7 @@ export function FindFoodPage() {
                 {list.length} {list.length === 1 ? 'donation' : 'donations'}, nearest first
               </p>
               <div
-                className={`grid gap-4 transition-opacity xl:grid-cols-2 ${nearby.isPlaceholderData ? 'opacity-60' : ''}`}
+                className={`grid grid-cols-1 gap-4 transition-opacity xl:grid-cols-2 ${nearby.isPlaceholderData ? 'opacity-60' : ''}`}
               >
                 {list.map((donation) => (
                   <NearbyDonationCard
