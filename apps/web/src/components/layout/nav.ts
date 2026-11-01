@@ -12,6 +12,9 @@ export const NAV_BY_ROLE: Record<Role, NavItem[]> = {
     { to: '/donor/donations', label: 'My donations' },
     { to: '/donor/donations/new', label: 'Donate food' },
   ],
-  ngo: [{ to: '/ngo', label: 'Dashboard' }],
+  ngo: [
+    { to: '/ngo', label: 'Find food' },
+    { to: '/ngo/pickups', label: 'My pickups' },
+  ],
   admin: [{ to: '/admin', label: 'NGO verification' }],
 };

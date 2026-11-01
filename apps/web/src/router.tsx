@@ -8,6 +8,7 @@ import { SignInPage } from './pages/auth/SignInPage.tsx';
 import { SignUpPage } from './pages/auth/SignUpPage.tsx';
 import { DashboardPlaceholder } from './pages/DashboardPlaceholder.tsx';
 import { LandingPage } from './pages/LandingPage.tsx';
+import { RequireVerifiedNgo } from './pages/ngo/RequireVerifiedNgo.tsx';
 import { NotFoundPage } from './pages/NotFoundPage.tsx';
 import { RouteError } from './pages/RouteError.tsx';
 
@@ -72,7 +73,25 @@ export const router = createBrowserRouter([
       },
       {
         element: <RequireAuth roles={['ngo']} />,
-        children: [{ path: 'ngo', element: <DashboardPlaceholder /> }],
+        children: [
+          {
+            element: <RequireVerifiedNgo />,
+            children: [
+              {
+                path: 'ngo',
+                lazy: async () => ({
+                  Component: (await import('./pages/ngo/FindFoodPage.tsx')).FindFoodPage,
+                }),
+              },
+              {
+                path: 'ngo/pickups',
+                lazy: async () => ({
+                  Component: (await import('./pages/ngo/PickupsPage.tsx')).PickupsPage,
+                }),
+              },
+            ],
+          },
+        ],
       },
       {
         element: <RequireAuth roles={['admin']} />,

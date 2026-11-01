@@ -69,3 +69,9 @@
   font: inherit;
   z-index: 0;
 }
+
+.leaflet-popup-content-wrapper,
+.leaflet-popup-tip {
+  background: var(--color-surface);
+  color: var(--color-ink);
+}

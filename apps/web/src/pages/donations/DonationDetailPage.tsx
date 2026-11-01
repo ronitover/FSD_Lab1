@@ -1,19 +1,14 @@
-import { useState, type ReactNode } from 'react';
+import type { ReactNode } from 'react';
 import { Link, useNavigate, useParams } from 'react-router';
 import type { DonationDetail, DonationEvent } from '@replate/shared';
 import { HOME_BY_ROLE, useMe } from '../../auth/context.ts';
 import { LocationMap } from '../../components/map/LocationMap.tsx';
 import { Button } from '../../components/ui/Button.tsx';
 import { FullPageError, FullPageSpinner } from '../../components/ui/Feedback.tsx';
-import { ConfirmDialog } from '../../components/ui/Modal.tsx';
 import { StatusBadge } from '../../components/ui/StatusBadge.tsx';
 import { buttonClasses } from '../../components/ui/styles.ts';
-import { useToast } from '../../components/ui/toast-context.ts';
-import {
-  useDeleteDonation,
-  useDonation,
-  useDonationAction,
-} from '../../features/donations/queries.ts';
+import { useDonation } from '../../features/donations/queries.ts';
+import { useDonationActions } from '../../features/donations/useDonationActions.tsx';
 import { ApiRequestError, errorMessage } from '../../lib/api.ts';
 import { formatDateTime, formatRelative } from '../../lib/dates.ts';
 import {
@@ -22,8 +17,6 @@ import {
   formatQuantity,
   STATUS_LABELS,
 } from '../../lib/labels.ts';
-
-type PendingAction = 'cancel' | 'delete' | null;
 
 export function DonationDetailPage() {
   const { id = '' } = useParams();
@@ -60,42 +53,29 @@ export function DonationDetailPage() {
 function DonationDetailView({ donation }: { donation: DonationDetail }) {
   const me = useMe();
   const navigate = useNavigate();
-  const toast = useToast();
-  const action = useDonationAction();
-  const remove = useDeleteDonation();
-  const [pending, setPending] = useState<PendingAction>(null);
+  const actions = useDonationActions();
 
   const isOwner = donation.donorId === me.id;
+  const isClaimer = donation.claimedBy === me.id;
   const canEdit = isOwner && donation.status === 'available';
   const canCancel = isOwner && (donation.status === 'available' || donation.status === 'claimed');
   const canDelete = isOwner && ['available', 'cancelled', 'expired'].includes(donation.status);
-  const backTo = isOwner ? '/donor/donations' : HOME_BY_ROLE[me.role];
-
-  async function confirmPending() {
-    try {
-      if (pending === 'cancel') {
-        await action.mutateAsync({ id: donation.id, action: 'cancel' });
-        toast.show('Donation cancelled.', 'info');
-      } else if (pending === 'delete') {
-        await remove.mutateAsync(donation.id);
-        toast.show('Donation deleted.', 'info');
-        void navigate('/donor/donations', { replace: true });
-      }
-    } catch (error) {
-      toast.show(errorMessage(error), 'error');
-    } finally {
-      setPending(null);
-    }
-  }
+  const canClaim = me.role === 'ngo' && donation.status === 'available';
+  const canFinish = isClaimer && donation.status === 'claimed';
+  const back = isOwner
+    ? { to: '/donor/donations', label: 'My donations' }
+    : isClaimer
+      ? { to: '/ngo/pickups', label: 'My pickups' }
+      : { to: HOME_BY_ROLE[me.role], label: me.role === 'ngo' ? 'Find food' : 'Back' };
 
   return (
     <div className="mx-auto max-w-5xl px-4 py-8 sm:px-6">
       <title>{`${donation.title} · RePlate`}</title>
       <Link
-        to={backTo}
+        to={back.to}
         className="text-sm font-semibold text-moss underline-offset-4 hover:underline"
       >
-        <span aria-hidden="true">←</span> {isOwner ? 'My donations' : 'Back'}
+        <span aria-hidden="true">←</span> {back.label}
       </Link>
 
       <header className="mt-4 flex flex-col gap-4 sm:flex-row sm:items-start sm:justify-between">
@@ -113,8 +93,21 @@ function DonationDetailView({ donation }: { donation: DonationDetail }) {
             {formatQuantity(donation.quantity, donation.quantityUnit)}
           </p>
         </div>
-        {(canEdit || canCancel || canDelete) && (
+        {(canEdit || canCancel || canDelete || canClaim || canFinish) && (
           <div className="flex flex-wrap gap-2 sm:justify-end">
+            {canClaim && (
+              <Button size="lg" onClick={() => actions.request('claim', donation)}>
+                Claim this donation
+              </Button>
+            )}
+            {canFinish && (
+              <>
+                <Button onClick={() => actions.request('collect', donation)}>Mark collected</Button>
+                <Button variant="secondary" onClick={() => actions.request('release', donation)}>
+                  Release claim
+                </Button>
+              </>
+            )}
             {canEdit && (
               <Link
                 to={`/donor/donations/${donation.id}/edit`}
@@ -124,12 +117,20 @@ function DonationDetailView({ donation }: { donation: DonationDetail }) {
               </Link>
             )}
             {canCancel && (
-              <Button variant="secondary" onClick={() => setPending('cancel')}>
+              <Button variant="secondary" onClick={() => actions.request('cancel', donation)}>
                 Cancel donation
               </Button>
             )}
             {canDelete && (
-              <Button variant="ghost" className="text-danger" onClick={() => setPending('delete')}>
+              <Button
+                variant="ghost"
+                className="text-danger"
+                onClick={() =>
+                  actions.request('delete', donation, () =>
+                    navigate('/donor/donations', { replace: true }),
+                  )
+                }
+              >
                 Delete
               </Button>
             )}
@@ -219,30 +220,7 @@ function DonationDetailView({ donation }: { donation: DonationDetail }) {
         </div>
       </div>
 
-      <ConfirmDialog
-        open={pending === 'cancel'}
-        title="Cancel this donation?"
-        confirmLabel="Cancel donation"
-        destructive
-        busy={action.isPending}
-        onConfirm={() => void confirmPending()}
-        onCancel={() => setPending(null)}
-      >
-        {donation.status === 'claimed'
-          ? 'An NGO has already claimed this and may be on the way. Let them know before you cancel.'
-          : 'NGOs will no longer see it. You can delete it afterwards.'}
-      </ConfirmDialog>
-      <ConfirmDialog
-        open={pending === 'delete'}
-        title="Delete this donation?"
-        confirmLabel="Delete"
-        destructive
-        busy={remove.isPending}
-        onConfirm={() => void confirmPending()}
-        onCancel={() => setPending(null)}
-      >
-        It will be removed from RePlate for good, along with its history.
-      </ConfirmDialog>
+      {actions.dialog}
     </div>
   );
 }

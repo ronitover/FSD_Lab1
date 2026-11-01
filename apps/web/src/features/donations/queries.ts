@@ -1,10 +1,13 @@
 import { keepPreviousData, useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import type {
+  DietaryType,
   Donation,
   DonationCreateInput,
   DonationDetail,
   DonationStatus,
   DonationUpdateInput,
+  FoodCategory,
+  NearbyDonation,
 } from '@replate/shared';
 import { api } from '../../lib/api.ts';
 
@@ -13,15 +16,28 @@ export interface MyDonationsFilters {
   status?: DonationStatus;
 }
 
+export interface NearbyParams {
+  lat: number;
+  lng: number;
+  radiusKm?: number;
+  q?: string;
+  category?: FoodCategory;
+  dietaryType?: DietaryType;
+}
+
 export const donationKeys = {
   all: ['donations'] as const,
   mine: (filters: MyDonationsFilters) => ['donations', 'mine', filters] as const,
+  nearby: (params: NearbyParams) => ['donations', 'nearby', params] as const,
+  claimed: (status?: DonationStatus) => ['donations', 'claimed', status ?? 'all'] as const,
   detail: (id: string) => ['donations', 'detail', id] as const,
 };
 
-function queryString(params: Record<string, string | undefined>) {
+function queryString(params: Record<string, string | number | undefined>) {
   const search = new URLSearchParams();
-  for (const [key, value] of Object.entries(params)) if (value) search.set(key, value);
+  for (const [key, value] of Object.entries(params)) {
+    if (value !== undefined && value !== '') search.set(key, String(value));
+  }
   const text = search.toString();
   return text ? `?${text}` : '';
 }
@@ -33,6 +49,28 @@ export function useMyDonations(filters: MyDonationsFilters = {}) {
       api<Donation[]>(`/donations/mine${queryString({ ...filters })}`, { signal }),
     // Keep showing the previous results while a new search loads, instead of flashing a spinner.
     placeholderData: keepPreviousData,
+  });
+}
+
+/** Open donations around a point, nearest first. Only verified NGOs may call this. */
+export function useNearbyDonations(params: NearbyParams | null) {
+  return useQuery({
+    queryKey: donationKeys.nearby(params ?? { lat: 0, lng: 0 }),
+    queryFn: ({ signal }) =>
+      api<NearbyDonation[]>(`/donations/nearby${queryString({ ...params })}`, { signal }),
+    enabled: params !== null,
+    placeholderData: keepPreviousData,
+    // New listings should show up without a manual refresh while an NGO is looking.
+    refetchInterval: 60_000,
+  });
+}
+
+/** The NGO's pickups: donations it has claimed. */
+export function useClaimedDonations(status?: DonationStatus) {
+  return useQuery({
+    queryKey: donationKeys.claimed(status),
+    queryFn: ({ signal }) =>
+      api<Donation[]>(`/donations/claimed${queryString({ status })}`, { signal }),
   });
 }
 
@@ -87,6 +125,7 @@ export function useDonationAction() {
   return useMutation({
     mutationFn: ({ id, action }: { id: string; action: DonationAction }) =>
       api<Donation>(`/donations/${id}/${action}`, { method: 'POST' }),
-    onSuccess: invalidate,
+    // Refresh on failure too: a 409 usually means someone else got there first.
+    onSettled: invalidate,
   });
 }
