@@ -48,6 +48,8 @@ In the dashboard under Authentication, set:
 
 Supabase's built-in email sender allows only a few emails an hour; set up custom SMTP before launch.
 
+For a demo, `npm run db:seed-demo -w @replate/api` creates demo donor, NGO and admin accounts with realistic donations around Bengaluru (dev project only). They all use `DEMO_PASSWORD` from `apps/api/.env`. Re-running it replaces them, so pickup times stay fresh. The walkthrough is in `docs/demo-script.md`.
+
 New NGO accounts start as `pending` and can't browse or claim until an admin verifies them. Admins are promoted by hand in the Supabase SQL editor: `update profiles set role = 'admin' where id = '<user id>';`
 
 ## API
