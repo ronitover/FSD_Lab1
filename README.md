@@ -41,6 +41,13 @@ npm run db:types                            # regenerates apps/api/src/db/databa
 
 Fill in the Supabase URL and keys in both `.env` files from Project Settings → API Keys. Run `db:check` against the dev project only: it creates and deletes test users.
 
+In the dashboard under Authentication, set:
+
+- **URL Configuration:** Site URL `http://localhost:5173` (the production URL on the production project), and add `http://localhost:5173/**` to Redirect URLs, so confirmation and password-reset links come back to the app.
+- **Providers → Email:** minimum password length 8, to match the sign-up form.
+
+Supabase's built-in email sender allows only a few emails an hour; set up custom SMTP before launch.
+
 New NGO accounts start as `pending` and can't browse or claim until an admin verifies them. Admins are promoted by hand in the Supabase SQL editor: `update profiles set role = 'admin' where id = '<user id>';`
 
 ## API
