@@ -9,8 +9,8 @@ RePlate connects surplus food from restaurants, stores and individuals with near
 | `apps/web`        | React + TypeScript web app (Vite)                                         |
 | `apps/api`        | Express + TypeScript REST API                                             |
 | `packages/shared` | Types, constants and validation rules used by both apps                   |
-| `supabase`        | Database migrations and seed data (Supabase / Postgres)                   |
-| `docs`            | Report, screenshots and design decisions                                  |
+| `supabase`        | Database migrations (Supabase / Postgres)                                 |
+| `docs`            | Demo walkthrough                                                          |
 | `legacy/part1`    | The original HTML/CSS/JS site from Lab Part 1 (also tagged `part1-final`) |
 
 ## Getting started
