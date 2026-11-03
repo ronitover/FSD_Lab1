@@ -1,0 +1,39 @@
+{
+  "name": "@replate/api",
+  "version": "0.1.0",
+  "private": true,
+  "description": "RePlate REST API (Express + Supabase).",
+  "type": "module",
+  "scripts": {
+    "dev": "tsx watch --env-file-if-exists=.env src/server.ts",
+    "build": "tsx build.ts",
+    "start": "node --env-file-if-exists=.env dist/server.js",
+    "typecheck": "tsc --noEmit",
+    "test": "vitest run",
+    "db:check": "tsx --env-file-if-exists=.env scripts/check-db-rules.ts",
+    "api:check": "LOG_LEVEL=warn tsx --env-file-if-exists=.env scripts/check-api.ts",
+    "db:seed-demo": "tsx --env-file-if-exists=.env scripts/seed-demo.ts"
+  },
+  "devDependencies": {
+    "@types/cors": "^2.8.19",
+    "@types/express": "^5.0.6",
+    "@types/node": "^24.19.2",
+    "@types/supertest": "^7.2.1",
+    "esbuild": "^0.28.2",
+    "pino-pretty": "^13.2.0",
+    "supertest": "^7.3.1",
+    "tsx": "^4.23.15",
+    "vitest": "^5.0.5"
+  },
+  "dependencies": {
+    "@replate/shared": "^0.1.0",
+    "@supabase/supabase-js": "^2.118.0",
+    "cors": "^2.8.6",
+    "express": "^5.3.0",
+    "express-rate-limit": "^8.7.2",
+    "helmet": "^8.3.0",
+    "pino": "^10.4.0",
+    "pino-http": "^11.0.0",
+    "zod": "^4.6.7"
+  }
+}

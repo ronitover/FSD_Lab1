@@ -1,0 +1,77 @@
+@import 'tailwindcss';
+
+/* Dark mode follows data-theme on <html>, set before first paint by the script in index.html. */
+@custom-variant dark (&:where([data-theme='dark'], [data-theme='dark'] *));
+
+/* RePlate colour tokens, carried over from the Part 1 site. Space-separated RGB so they switch with the theme. */
+:root {
+  --c-surface: 255 255 255;
+  --c-cream: 247 245 239;
+  --c-forest: 23 59 42;
+  --c-sage: 167 185 160;
+  --c-moss: 73 106 76;
+  --c-orange: 232 137 79;
+  --c-ink: 32 53 42;
+  --c-danger: 180 35 24;
+  color-scheme: light;
+}
+
+:root[data-theme='dark'] {
+  --c-surface: 24 38 30;
+  --c-cream: 13 22 17;
+  --c-forest: 227 236 224;
+  --c-sage: 150 180 150;
+  --c-moss: 146 190 150;
+  --c-ink: 214 226 211;
+  --c-danger: 249 128 114;
+  color-scheme: dark;
+}
+
+@theme inline {
+  --color-surface: rgb(var(--c-surface));
+  --color-cream: rgb(var(--c-cream));
+  --color-forest: rgb(var(--c-forest));
+  --color-sage: rgb(var(--c-sage));
+  --color-moss: rgb(var(--c-moss));
+  --color-orange: rgb(var(--c-orange));
+  --color-ink: rgb(var(--c-ink));
+  --color-danger: rgb(var(--c-danger));
+  --font-display: Georgia, Cambria, serif;
+  --font-sans: ui-sans-serif, system-ui, sans-serif;
+  --shadow-soft: 0 18px 50px rgb(23 59 42 / 0.1);
+}
+
+@layer base {
+  body {
+    @apply min-h-dvh bg-cream font-sans text-ink antialiased;
+  }
+
+  :focus-visible {
+    @apply outline-2 outline-offset-2 outline-orange;
+  }
+
+  dialog::backdrop {
+    background: rgb(13 22 17 / 0.55);
+  }
+}
+
+/* Leaflet: our pins are SVG, so drop the default white box; dim the light map tiles in dark mode. */
+.replate-pin {
+  background: none;
+  border: 0;
+}
+
+[data-theme='dark'] .leaflet-tile-pane {
+  filter: invert(1) hue-rotate(180deg) brightness(0.9) contrast(0.9);
+}
+
+.leaflet-container {
+  font: inherit;
+  z-index: 0;
+}
+
+.leaflet-popup-content-wrapper,
+.leaflet-popup-tip {
+  background: var(--color-surface);
+  color: var(--color-ink);
+}

@@ -1,0 +1,30 @@
+{
+  "name": "replate",
+  "private": true,
+  "description": "RePlate connects surplus food with nearby NGOs before it goes to waste.",
+  "type": "module",
+  "workspaces": [
+    "apps/*",
+    "packages/*"
+  ],
+  "engines": {
+    "node": ">=22"
+  },
+  "scripts": {
+    "dev": "concurrently -k -n web,api -c green,blue \"npm run dev -w @replate/web\" \"npm run dev -w @replate/api\"",
+    "build": "npm run build --workspaces --if-present",
+    "typecheck": "npm run typecheck --workspaces --if-present",
+    "test": "npm run test --workspaces --if-present",
+    "lint": "oxlint",
+    "format": "prettier --write .",
+    "format:check": "prettier --check .",
+    "check": "npm run lint && npm run format:check && npm run typecheck && npm run test && npm run build",
+    "db:types": "supabase gen types typescript --linked --schema public > apps/api/src/db/database.types.ts"
+  },
+  "devDependencies": {
+    "concurrently": "^9.2.1",
+    "oxlint": "^1.89.0",
+    "prettier": "^3.6.2",
+    "typescript": "~7.0.2"
+  }
+}
