@@ -19,19 +19,23 @@ export function localInputFromNow(hours = 0): string {
   return toLocalInput(new Date(Date.now() + hours * 60 * 60 * 1000).toISOString());
 }
 
-const dateTimeFormat = new Intl.DateTimeFormat(undefined, {
+// RePlate serves India, so times read the Indian way (12-hour with am/pm) whatever the browser's language.
+const LOCALE = 'en-IN';
+
+const dateTimeFormat = new Intl.DateTimeFormat(LOCALE, {
   weekday: 'short',
   day: 'numeric',
   month: 'short',
   hour: 'numeric',
   minute: '2-digit',
+  hour12: true,
 });
 
 export function formatDateTime(iso: string): string {
   return dateTimeFormat.format(new Date(iso));
 }
 
-const relativeFormat = new Intl.RelativeTimeFormat(undefined, { numeric: 'auto' });
+const relativeFormat = new Intl.RelativeTimeFormat(LOCALE, { numeric: 'auto' });
 
 const UNITS: [Intl.RelativeTimeFormatUnit, number][] = [
   ['day', 24 * 60 * 60 * 1000],

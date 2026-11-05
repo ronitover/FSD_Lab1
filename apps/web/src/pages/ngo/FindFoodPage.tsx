@@ -248,7 +248,7 @@ export function FindFoodPage() {
         ))}
       </div>
 
-      <div className="mt-4 grid grid-cols-1 gap-6 lg:mt-6 lg:grid-cols-[minmax(0,1fr)_minmax(0,1.1fr)]">
+      <div className="mt-4 grid grid-cols-1 gap-6 lg:mt-6 lg:grid-cols-[minmax(0,1.4fr)_minmax(0,1fr)]">
         <div className={view === 'map' ? 'hidden lg:block' : ''} aria-busy={nearby.isFetching}>
           {nearby.isPending ? (
             <div className="grid place-items-center py-20 text-moss">
@@ -289,7 +289,7 @@ export function FindFoodPage() {
                 {list.length} {list.length === 1 ? 'donation' : 'donations'}, nearest first
               </p>
               <div
-                className={`grid grid-cols-1 gap-4 transition-opacity xl:grid-cols-2 ${nearby.isPlaceholderData ? 'opacity-60' : ''}`}
+                className={`stagger grid grid-cols-1 gap-4 transition-opacity xl:grid-cols-2 ${nearby.isPlaceholderData ? 'opacity-60' : ''}`}
               >
                 {list.map((donation) => (
                   <NearbyDonationCard

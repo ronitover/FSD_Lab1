@@ -1,5 +1,6 @@
 import { useState, type FormEvent } from 'react';
-import { Link } from 'react-router';
+import { HandHeart, Utensils } from 'lucide-react';
+import { Link, useSearchParams } from 'react-router';
 import { PASSWORD_MIN_LENGTH, signUpSchema, type SignUpRole } from '@replate/shared';
 import { AuthCard } from '../../components/layout/AuthCard.tsx';
 import { Button } from '../../components/ui/Button.tsx';
@@ -25,11 +26,13 @@ const ROLE_OPTIONS: RadioOption<SignUpRole>[] = [
     value: 'donor',
     label: 'I have food to donate',
     description: 'Restaurants, stores, caterers, events and households.',
+    icon: <Utensils className="size-5" />,
   },
   {
     value: 'ngo',
     label: 'I represent an NGO',
     description: 'Find and collect donations near you once we verify your organisation.',
+    icon: <HandHeart className="size-5" />,
   },
 ];
 
@@ -43,7 +46,13 @@ const EMPTY: SignUpValues = {
 };
 
 export function SignUpPage() {
-  const [values, setValues] = useState<SignUpValues>(EMPTY);
+  // The landing page's "Donate food" and "I represent an NGO" links say which role was chosen.
+  const [params] = useSearchParams();
+  const roleParam = params.get('role');
+  const [values, setValues] = useState<SignUpValues>(() => ({
+    ...EMPTY,
+    role: roleParam === 'donor' || roleParam === 'ngo' ? roleParam : '',
+  }));
   const [errors, setErrors] = useState<FieldErrors<SignUpValues>>({});
   const [formError, setFormError] = useState<string | null>(null);
   const [submitting, setSubmitting] = useState(false);

@@ -4,6 +4,8 @@ export interface RadioOption<T extends string> {
   value: T;
   label: string;
   description?: ReactNode;
+  /** Shown on the card appearance, e.g. an icon for each role. */
+  icon?: ReactNode;
 }
 
 interface RadioGroupProps<T extends string> {
@@ -70,7 +72,17 @@ export function RadioGroup<T extends string>({
                 className={appearance === 'cards' ? 'mt-1 accent-moss' : 'sr-only'}
               />
               {appearance === 'cards' ? (
-                <span>
+                <span className="min-w-0 flex-1">
+                  {option.icon && (
+                    <span
+                      className={`mb-3 flex size-11 items-center justify-center rounded-xl transition duration-300 ${
+                        checked ? 'scale-110 bg-moss text-white' : 'bg-orange/15 text-orange'
+                      }`}
+                      aria-hidden="true"
+                    >
+                      {option.icon}
+                    </span>
+                  )}
                   <span className="block text-sm font-bold text-forest">{option.label}</span>
                   {option.description && (
                     <span className="mt-1 block text-xs leading-5 text-forest/65">

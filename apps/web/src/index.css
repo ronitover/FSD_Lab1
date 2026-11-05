@@ -36,9 +36,96 @@
   --color-orange: rgb(var(--c-orange));
   --color-ink: rgb(var(--c-ink));
   --color-danger: rgb(var(--c-danger));
-  --font-display: Georgia, Cambria, serif;
-  --font-sans: ui-sans-serif, system-ui, sans-serif;
+  --font-display: 'Fraunces', Georgia, Cambria, serif;
+  --font-sans: 'Plus Jakarta Sans', ui-sans-serif, system-ui, sans-serif;
   --shadow-soft: 0 18px 50px rgb(23 59 42 / 0.1);
+  --shadow-lift: 0 24px 60px rgb(23 59 42 / 0.16);
+
+  --animate-fade-up: fade-up 0.6s cubic-bezier(0.22, 1, 0.36, 1) both;
+  --animate-float: float 6s ease-in-out infinite;
+  --animate-float-slow: float 9s ease-in-out infinite;
+  --animate-marquee: marquee 40s linear infinite;
+  --animate-blob: blob 18s ease-in-out infinite;
+  --animate-ping-soft: ping-soft 2s cubic-bezier(0, 0, 0.2, 1) infinite;
+
+  @keyframes fade-up {
+    from {
+      opacity: 0;
+      transform: translateY(16px);
+    }
+    to {
+      opacity: 1;
+      transform: none;
+    }
+  }
+  @keyframes float {
+    0%,
+    100% {
+      transform: translateY(0);
+    }
+    50% {
+      transform: translateY(-10px);
+    }
+  }
+  @keyframes marquee {
+    to {
+      transform: translateX(-50%);
+    }
+  }
+  @keyframes blob {
+    0%,
+    100% {
+      transform: translate(0, 0) scale(1);
+    }
+    33% {
+      transform: translate(30px, -20px) scale(1.08);
+    }
+    66% {
+      transform: translate(-20px, 15px) scale(0.95);
+    }
+  }
+  @keyframes ping-soft {
+    75%,
+    100% {
+      transform: scale(2.2);
+      opacity: 0;
+    }
+  }
+}
+
+/*
+ * Motion. Everything here is decoration, so it only runs for people who haven't asked for less motion,
+ * and content is fully visible without it.
+ */
+@media (prefers-reduced-motion: no-preference) {
+  /* Lists fade in one item after another when they first render. */
+  .stagger > * {
+    animation: var(--animate-fade-up);
+  }
+  .stagger > :nth-child(2) {
+    animation-delay: 60ms;
+  }
+  .stagger > :nth-child(3) {
+    animation-delay: 120ms;
+  }
+  .stagger > :nth-child(4) {
+    animation-delay: 180ms;
+  }
+  .stagger > :nth-child(5) {
+    animation-delay: 240ms;
+  }
+  .stagger > :nth-child(n + 6) {
+    animation-delay: 300ms;
+  }
+
+  /* Sections slide in as they scroll into view, where the browser supports scroll-driven animation. */
+  @supports (animation-timeline: view()) {
+    .reveal {
+      animation: fade-up linear both;
+      animation-timeline: view();
+      animation-range: entry 0% entry 40%;
+    }
+  }
 }
 
 @layer base {

@@ -1,3 +1,4 @@
+import { CircleCheckBig, Hourglass, Truck, type LucideIcon } from 'lucide-react';
 import { Link } from 'react-router';
 import type { DonationStatus } from '@replate/shared';
 import { useMe } from '../../auth/context.ts';
@@ -7,10 +8,20 @@ import { DonationCard } from '../../features/donations/DonationCard.tsx';
 import { useMyDonations } from '../../features/donations/queries.ts';
 import { errorMessage } from '../../lib/api.ts';
 
-const STATS: { status: DonationStatus; label: string }[] = [
-  { status: 'available', label: 'Waiting for an NGO' },
-  { status: 'claimed', label: 'Awaiting pickup' },
-  { status: 'collected', label: 'Collected' },
+const STATS: { status: DonationStatus; label: string; icon: LucideIcon; tint: string }[] = [
+  {
+    status: 'available',
+    label: 'Waiting for an NGO',
+    icon: Hourglass,
+    tint: 'bg-moss/15 text-moss',
+  },
+  { status: 'claimed', label: 'Awaiting pickup', icon: Truck, tint: 'bg-orange/15 text-orange' },
+  {
+    status: 'collected',
+    label: 'Collected',
+    icon: CircleCheckBig,
+    tint: 'bg-forest/10 text-forest',
+  },
 ];
 
 export function DonorDashboardPage() {
@@ -25,7 +36,7 @@ export function DonorDashboardPage() {
   return (
     <div className="mx-auto max-w-5xl px-4 py-10 sm:px-6">
       <title>Dashboard · RePlate</title>
-      <div className="flex flex-wrap items-end justify-between gap-4">
+      <div className="flex flex-wrap items-end justify-between gap-4 motion-safe:animate-fade-up">
         <div>
           <p className="text-xs font-bold tracking-[0.22em] text-moss uppercase">Donor</p>
           <h1 className="mt-2 font-display text-4xl tracking-tight text-forest">
@@ -48,14 +59,22 @@ export function DonorDashboardPage() {
         />
       ) : (
         <>
-          <dl className="mt-8 grid grid-cols-3 gap-3 sm:gap-4">
+          <dl className="stagger mt-8 grid grid-cols-3 gap-3 sm:gap-4">
             {STATS.map((stat) => (
               <Link
                 key={stat.status}
                 to={`/donor/donations?status=${stat.status}`}
-                className="flex flex-col justify-between gap-2 rounded-3xl bg-surface p-4 shadow-soft transition hover:-translate-y-0.5 sm:p-6"
+                className="group flex flex-col justify-between gap-3 rounded-3xl bg-surface p-4 shadow-soft transition duration-300 hover:-translate-y-0.5 hover:shadow-lift sm:p-6"
               >
-                <dt className="text-xs font-semibold text-forest/60 sm:text-sm">{stat.label}</dt>
+                <span
+                  className={`flex size-9 items-center justify-center rounded-xl transition duration-300 group-hover:scale-110 sm:size-11 ${stat.tint}`}
+                  aria-hidden="true"
+                >
+                  <stat.icon className="size-4.5 sm:size-5" strokeWidth={2} />
+                </span>
+                <dt className="min-h-8 text-xs font-semibold text-forest/60 sm:min-h-0 sm:text-sm">
+                  {stat.label}
+                </dt>
                 <dd className="font-display text-3xl text-forest sm:text-4xl">
                   {count(stat.status)}
                 </dd>
@@ -86,7 +105,7 @@ export function DonorDashboardPage() {
                   <p className="mt-1 text-sm text-forest/60">
                     Open a donation to see who claimed it and how to reach them.
                   </p>
-                  <div className="mt-4 space-y-3">
+                  <div className="stagger mt-4 space-y-3">
                     {awaitingPickup.map((donation) => (
                       <DonationCard key={donation.id} donation={donation} />
                     ))}
@@ -106,7 +125,7 @@ export function DonorDashboardPage() {
                       See all
                     </Link>
                   </div>
-                  <div className="mt-4 space-y-3">
+                  <div className="stagger mt-4 space-y-3">
                     {recent.map((donation) => (
                       <DonationCard key={donation.id} donation={donation} />
                     ))}

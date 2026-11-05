@@ -75,7 +75,7 @@ export function PickupsPage() {
             Donations you claim appear here until you collect them.
           </EmptyState>
         ) : (
-          <div className="space-y-3">
+          <div className="stagger space-y-3">
             {list.map((donation) => (
               <PickupCard
                 key={donation.id}

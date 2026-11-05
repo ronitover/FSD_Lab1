@@ -109,7 +109,7 @@ export function MyDonationsPage() {
               {filtered && ' found'}
             </p>
             <div
-              className={`space-y-3 transition-opacity ${donations.isPlaceholderData ? 'opacity-60' : ''}`}
+              className={`stagger space-y-3 transition-opacity ${donations.isPlaceholderData ? 'opacity-60' : ''}`}
             >
               {list.map((donation) => (
                 <DonationCard key={donation.id} donation={donation} />

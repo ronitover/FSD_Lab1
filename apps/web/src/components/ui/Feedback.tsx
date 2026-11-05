@@ -1,4 +1,5 @@
 import type { ReactNode } from 'react';
+import { UtensilsCrossed, type LucideIcon } from 'lucide-react';
 import { Button } from './Button.tsx';
 
 export function Spinner({ className = 'size-6', label }: { className?: string; label?: string }) {
@@ -63,13 +64,19 @@ export function EmptyState({
   title,
   children,
   action,
+  icon: Icon = UtensilsCrossed,
 }: {
   title: string;
   children?: ReactNode;
   action?: ReactNode;
+  icon?: LucideIcon;
 }) {
   return (
-    <div className="rounded-3xl border border-dashed border-forest/20 px-6 py-12 text-center">
+    <div className="rounded-3xl border border-dashed border-forest/20 bg-surface/40 px-6 py-12 text-center motion-safe:animate-fade-up">
+      <span className="relative mx-auto mb-4 flex size-16 items-center justify-center">
+        <span className="absolute inset-0 rounded-full bg-orange/10 motion-safe:animate-float-slow" />
+        <Icon className="relative size-7 text-orange" strokeWidth={1.75} aria-hidden="true" />
+      </span>
       <h2 className="font-display text-xl text-forest">{title}</h2>
       {children && <p className="mx-auto mt-2 max-w-sm text-sm text-forest/65">{children}</p>}
       {action && <div className="mt-5">{action}</div>}

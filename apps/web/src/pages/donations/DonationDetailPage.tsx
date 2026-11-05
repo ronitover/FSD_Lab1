@@ -5,18 +5,14 @@ import { HOME_BY_ROLE, useMe } from '../../auth/context.ts';
 import { LocationMap } from '../../components/map/LocationMap.tsx';
 import { Button } from '../../components/ui/Button.tsx';
 import { FullPageError, FullPageSpinner } from '../../components/ui/Feedback.tsx';
+import { CategoryTile, FoodTypeLabel } from '../../components/ui/FoodVisuals.tsx';
 import { StatusBadge } from '../../components/ui/StatusBadge.tsx';
 import { buttonClasses } from '../../components/ui/styles.ts';
 import { useDonation } from '../../features/donations/queries.ts';
 import { useDonationActions } from '../../features/donations/useDonationActions.tsx';
 import { ApiRequestError, errorMessage } from '../../lib/api.ts';
 import { formatDateTime, formatRelative } from '../../lib/dates.ts';
-import {
-  CATEGORY_LABELS,
-  DIETARY_LABELS,
-  formatQuantity,
-  STATUS_LABELS,
-} from '../../lib/labels.ts';
+import { CATEGORY_LABELS, formatQuantity, STATUS_LABELS } from '../../lib/labels.ts';
 
 export function DonationDetailPage() {
   const { id = '' } = useParams();
@@ -78,20 +74,22 @@ function DonationDetailView({ donation }: { donation: DonationDetail }) {
         <span aria-hidden="true">←</span> {back.label}
       </Link>
 
-      <header className="mt-4 flex flex-col gap-4 sm:flex-row sm:items-start sm:justify-between">
-        <div className="min-w-0">
-          <div className="flex flex-wrap items-center gap-2">
-            <StatusBadge status={donation.status} />
-            <span className="text-sm text-forest/60">
-              {CATEGORY_LABELS[donation.category]} · {DIETARY_LABELS[donation.dietaryType]}
-            </span>
+      <header className="mt-4 flex flex-col gap-4 motion-safe:animate-fade-up sm:flex-row sm:items-start sm:justify-between">
+        <div className="flex min-w-0 gap-4">
+          <CategoryTile category={donation.category} size="lg" className="hidden sm:inline-flex" />
+          <div className="min-w-0">
+            <div className="flex flex-wrap items-center gap-x-3 gap-y-1">
+              <StatusBadge status={donation.status} />
+              <FoodTypeLabel type={donation.dietaryType} />
+              <span className="text-sm text-forest/60">{CATEGORY_LABELS[donation.category]}</span>
+            </div>
+            <h1 className="mt-3 font-display text-3xl tracking-tight break-words text-forest sm:text-4xl">
+              {donation.title}
+            </h1>
+            <p className="mt-2 text-lg font-semibold text-forest/80">
+              {formatQuantity(donation.quantity, donation.quantityUnit)}
+            </p>
           </div>
-          <h1 className="mt-3 font-display text-3xl tracking-tight break-words text-forest sm:text-4xl">
-            {donation.title}
-          </h1>
-          <p className="mt-2 text-lg font-semibold text-forest/80">
-            {formatQuantity(donation.quantity, donation.quantityUnit)}
-          </p>
         </div>
         {(canEdit || canCancel || canDelete || canClaim || canFinish) && (
           <div className="flex flex-wrap gap-2 sm:justify-end">
@@ -138,7 +136,7 @@ function DonationDetailView({ donation }: { donation: DonationDetail }) {
         )}
       </header>
 
-      <div className="mt-8 grid grid-cols-1 gap-6 lg:grid-cols-[minmax(0,1.4fr)_minmax(0,1fr)]">
+      <div className="stagger mt-8 grid grid-cols-1 gap-6 lg:grid-cols-[minmax(0,1.4fr)_minmax(0,1fr)]">
         <div className="space-y-6">
           {donation.contact && (
             <Card title={isOwner ? 'Claimed by' : 'Donor'}>
