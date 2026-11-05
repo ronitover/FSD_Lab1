@@ -1,11 +1,12 @@
 import { useState, type FormEvent } from 'react';
+import { LockKeyhole, ShieldCheck } from 'lucide-react';
 import { Link, useNavigate } from 'react-router';
 import { newPasswordSchema, PASSWORD_MIN_LENGTH } from '@replate/shared';
 import { HOME_BY_ROLE, useAuth } from '../../auth/context.ts';
 import { AuthCard } from '../../components/layout/AuthCard.tsx';
 import { Button } from '../../components/ui/Button.tsx';
 import { Alert, FullPageSpinner } from '../../components/ui/Feedback.tsx';
-import { TextField } from '../../components/ui/FormField.tsx';
+import { AuthField } from '../../components/ui/AuthField.tsx';
 import { useToast } from '../../components/ui/toast-context.ts';
 import { authErrorMessage } from '../../lib/authErrors.ts';
 import { fieldErrors, type FieldErrors } from '../../lib/forms.ts';
@@ -73,12 +74,17 @@ export function ResetPasswordPage() {
   }
 
   return (
-    <AuthCard title="Choose a new password">
+    <AuthCard
+      title="Choose a new password"
+      error={formError ?? Object.values(errors).find(Boolean)}
+    >
       <title>Reset your password · RePlate</title>
       <form onSubmit={handleSubmit} noValidate className="space-y-5">
         {formError && <Alert>{formError}</Alert>}
-        <TextField
+        <AuthField
           label="New password"
+          icon={LockKeyhole}
+          showStrength
           type="password"
           autoComplete="new-password"
           hint={`At least ${PASSWORD_MIN_LENGTH} characters.`}
@@ -87,8 +93,10 @@ export function ResetPasswordPage() {
           error={errors.password}
           required
         />
-        <TextField
+        <AuthField
           label="Confirm new password"
+          icon={ShieldCheck}
+          valid={values.confirmPassword.length > 0 && values.confirmPassword === values.password}
           type="password"
           autoComplete="new-password"
           value={values.confirmPassword}
@@ -96,7 +104,7 @@ export function ResetPasswordPage() {
           error={errors.confirmPassword}
           required
         />
-        <Button type="submit" loading={submitting} className="w-full">
+        <Button type="submit" size="lg" loading={submitting} className="w-full">
           Save password
         </Button>
       </form>

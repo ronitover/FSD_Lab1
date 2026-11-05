@@ -1,18 +1,43 @@
 import { Link } from 'react-router';
 
+/**
+ * The RePlate mark: a plate rim that turns into an arrow (food going round again) around a serving
+ * of food. Two shapes only, so it stays clean at favicon size. public/favicon.svg draws the same.
+ */
+export function LogoMark({
+  className = 'size-9',
+  tone = 'default',
+}: {
+  className?: string;
+  /** "light" for dark backgrounds. */
+  tone?: 'default' | 'light';
+}) {
+  const rim = tone === 'light' ? 'stroke-[#f7f5ef]' : 'stroke-forest';
+  return (
+    <svg viewBox="0 0 32 32" className={className} fill="none" aria-hidden="true">
+      <g className={rim} strokeWidth="3" strokeLinecap="round" strokeLinejoin="round">
+        <path d="M23.07 7.57A11 11 0 1 1 8.93 7.57" />
+        <path d="M5.5 6.6h4.6l-.8 4.6" />
+      </g>
+      <circle cx="16" cy="16" r="5" className="fill-orange" />
+    </svg>
+  );
+}
+
 export function Logo({ to = '/' }: { to?: string }) {
   return (
-    <Link to={to} className="flex items-center gap-3 rounded-full" aria-label="RePlate home">
+    <Link
+      to={to}
+      className="group flex items-center gap-2.5 rounded-full"
+      aria-label="RePlate home"
+    >
+      <LogoMark className="size-9 transition duration-500 group-hover:-rotate-45" />
       <span
-        className="flex size-10 items-center justify-center rounded-full bg-forest text-cream"
+        className="font-display text-[1.45rem] font-semibold tracking-tight text-forest"
         aria-hidden="true"
       >
-        <svg viewBox="0 0 24 24" className="size-5 fill-none stroke-current" strokeWidth="1.8">
-          <path d="M12 20c0-6.6 1.1-11 6.8-15.5.3 6.5-1.8 10.3-6.8 12.2M12 20C8.8 15.4 6.6 12.2 2.8 11c.8 4.8 3.3 7.9 9.2 9Z" />
-          <path d="M12 20V9" />
-        </svg>
+        RePlate
       </span>
-      <span className="font-display text-xl font-bold tracking-tight text-forest">RePlate</span>
     </Link>
   );
 }

@@ -2,11 +2,11 @@ type ButtonVariant = 'primary' | 'secondary' | 'ghost' | 'danger' | 'accent';
 type ButtonSize = 'sm' | 'md' | 'lg';
 
 const BASE =
-  'inline-flex items-center justify-center gap-2 rounded-full font-bold transition disabled:cursor-not-allowed disabled:opacity-60';
+  'inline-flex items-center justify-center gap-2 rounded-full font-bold transition duration-200 active:scale-[0.97] disabled:cursor-not-allowed disabled:opacity-60 disabled:active:scale-100';
 
 const VARIANTS: Record<ButtonVariant, string> = {
-  primary: 'bg-forest text-cream hover:bg-forest/90',
-  accent: 'bg-orange text-white hover:bg-orange/90',
+  primary: 'bg-forest text-cream hover:bg-forest/90 hover:shadow-lg hover:shadow-forest/20',
+  accent: 'bg-orange text-white hover:bg-orange/90 hover:shadow-lg hover:shadow-orange/30',
   secondary: 'border border-forest/25 text-forest hover:border-forest hover:bg-surface',
   ghost: 'text-forest hover:bg-forest/5',
   danger: 'bg-danger text-white hover:bg-danger/90 dark:text-cream',

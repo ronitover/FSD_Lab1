@@ -23,6 +23,11 @@ export default defineConfig({
       },
     },
   },
+  optimizeDeps: {
+    // Only reached through the lazily loaded mascot, so Vite would otherwise find them mid-session
+    // and re-bundle dependencies, which leaves the open page with two copies of React.
+    include: ['motion/react', 'motion/react-m'],
+  },
   server: {
     // In development the web app calls /api on its own origin and Vite forwards it, so no CORS setup is needed locally.
     proxy: {

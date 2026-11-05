@@ -1,6 +1,19 @@
+import {
+  BadgeCheck,
+  Calendar,
+  FileText,
+  MapPin,
+  Phone,
+  RotateCcw,
+  ShieldCheck,
+  XCircle,
+  type LucideIcon,
+} from 'lucide-react';
 import { useState, type ReactNode } from 'react';
 import { useSearchParams } from 'react-router';
 import { NGO_VERIFICATIONS, type AdminNgo, type NgoVerification } from '@replate/shared';
+import { Avatar } from '../../components/ui/Avatar.tsx';
+import { TabHighlight } from '../../components/motion/TabHighlight.tsx';
 import { Button } from '../../components/ui/Button.tsx';
 import { EmptyState, FullPageError, Spinner } from '../../components/ui/Feedback.tsx';
 import { ConfirmDialog } from '../../components/ui/Modal.tsx';
@@ -8,6 +21,7 @@ import { VerificationBadge } from '../../components/ui/StatusBadge.tsx';
 import { useToast } from '../../components/ui/toast-context.ts';
 import { useAdminNgos, useSetVerification } from '../../features/admin/queries.ts';
 import { errorMessage } from '../../lib/api.ts';
+import { telLink } from '../../lib/contact.ts';
 import { formatDateTime } from '../../lib/dates.ts';
 
 const TABS: { value: NgoVerification | 'all'; label: string }[] = [
@@ -69,13 +83,14 @@ export function AdminNgosPage() {
             onClick={() =>
               setParams(item.value === 'pending' ? {} : { show: item.value }, { replace: true })
             }
-            className={`rounded-full px-4 py-2 text-sm font-semibold transition ${
+            className={`relative rounded-full px-4 py-2 text-sm font-semibold transition-colors duration-200 active:scale-[0.97] ${
               tab === item.value
-                ? 'bg-forest text-cream'
+                ? 'text-cream'
                 : 'border border-forest/20 text-forest hover:border-forest/50'
             }`}
           >
-            {item.label}
+            {tab === item.value && <TabHighlight group="admin-tabs" />}
+            <span className="relative">{item.label}</span>
           </button>
         ))}
       </div>
@@ -88,41 +103,53 @@ export function AdminNgosPage() {
         ) : ngos.isError ? (
           <FullPageError message={errorMessage(ngos.error)} onRetry={() => void ngos.refetch()} />
         ) : list.length === 0 ? (
-          <EmptyState title={tab === 'pending' ? 'No NGOs waiting' : 'No NGOs here'}>
+          <EmptyState
+            icon={ShieldCheck}
+            title={tab === 'pending' ? 'No NGOs waiting' : 'No NGOs here'}
+          >
             {tab === 'pending' ? 'New NGO sign-ups will appear here for review.' : undefined}
           </EmptyState>
         ) : (
-          <ul className={`space-y-3 ${ngos.isPlaceholderData ? 'opacity-60' : ''}`}>
+          <ul
+            key={tab}
+            className={`stagger space-y-3 ${ngos.isPlaceholderData ? 'opacity-60' : ''}`}
+          >
             {list.map((ngo) => (
-              <li key={ngo.id} className="rounded-3xl bg-surface p-5 shadow-soft">
+              <li
+                key={ngo.id}
+                className="rounded-3xl bg-surface p-5 shadow-soft transition duration-300 hover:shadow-lift"
+              >
                 <div className="flex flex-col gap-4 sm:flex-row sm:items-start sm:justify-between">
-                  <div className="min-w-0">
-                    <VerificationBadge verification={ngo.verification} />
-                    <h2 className="mt-2 font-display text-xl break-words text-forest">
-                      {ngo.displayName}
-                    </h2>
-                    <dl className="mt-3 grid gap-x-6 gap-y-2 text-sm sm:grid-cols-2">
-                      <Item label="Registration number">
-                        {ngo.registrationNumber ?? (
-                          <span className="text-forest/50">Not given</span>
-                        )}
-                      </Item>
-                      <Item label="Phone">
-                        {ngo.phone ? (
-                          <a href={`tel:${ngo.phone.replace(/[^\d+]/g, '')}`} className="text-moss">
-                            {ngo.phone}
-                          </a>
-                        ) : (
-                          <span className="text-forest/50">Not given</span>
-                        )}
-                      </Item>
-                      <Item label="Address">
-                        {ngo.address ?? <span className="text-forest/50">Not given</span>}
-                      </Item>
-                      <Item label={ngo.verifiedAt ? 'Verified' : 'Signed up'}>
-                        {formatDateTime(ngo.verifiedAt ?? ngo.createdAt)}
-                      </Item>
-                    </dl>
+                  <div className="flex min-w-0 gap-4">
+                    <Avatar name={ngo.displayName} />
+                    <div className="min-w-0">
+                      <VerificationBadge verification={ngo.verification} />
+                      <h2 className="mt-2 font-display text-xl break-words text-forest">
+                        {ngo.displayName}
+                      </h2>
+                      <dl className="mt-3 grid gap-x-6 gap-y-3 text-sm sm:grid-cols-2">
+                        <Item icon={FileText} label="Registration number">
+                          {ngo.registrationNumber ?? (
+                            <span className="text-forest/50">Not given</span>
+                          )}
+                        </Item>
+                        <Item icon={Phone} label="Phone">
+                          {ngo.phone ? (
+                            <a href={telLink(ngo.phone)} className="font-semibold text-moss">
+                              {ngo.phone}
+                            </a>
+                          ) : (
+                            <span className="text-forest/50">Not given</span>
+                          )}
+                        </Item>
+                        <Item icon={MapPin} label="Address">
+                          {ngo.address ?? <span className="text-forest/50">Not given</span>}
+                        </Item>
+                        <Item icon={Calendar} label={ngo.verifiedAt ? 'Verified' : 'Signed up'}>
+                          {formatDateTime(ngo.verifiedAt ?? ngo.createdAt)}
+                        </Item>
+                      </dl>
+                    </div>
                   </div>
                   <div className="flex shrink-0 flex-wrap gap-2">
                     {NGO_VERIFICATIONS.filter((value) => value !== ngo.verification).map(
@@ -139,6 +166,7 @@ export function AdminNgosPage() {
                           }
                           onClick={() => setPending({ ngo, verification })}
                         >
+                          <ActionIcon verification={verification} />
                           {verification === 'verified'
                             ? 'Verify'
                             : verification === 'rejected'
@@ -184,11 +212,33 @@ export function AdminNgosPage() {
   );
 }
 
-function Item({ label, children }: { label: string; children: ReactNode }) {
+function Item({
+  icon: Icon,
+  label,
+  children,
+}: {
+  icon: LucideIcon;
+  label: string;
+  children: ReactNode;
+}) {
   return (
-    <div className="min-w-0">
-      <dt className="text-xs text-forest/55">{label}</dt>
-      <dd className="break-words text-forest">{children}</dd>
+    <div className="flex min-w-0 gap-2.5">
+      <Icon className="mt-0.5 size-4 shrink-0 text-forest/40" aria-hidden="true" />
+      <div className="min-w-0">
+        <dt className="text-xs text-forest/55">{label}</dt>
+        <dd className="break-words text-forest">{children}</dd>
+      </div>
     </div>
   );
+}
+
+const ACTION_ICONS: Record<NgoVerification, LucideIcon> = {
+  verified: BadgeCheck,
+  rejected: XCircle,
+  pending: RotateCcw,
+};
+
+function ActionIcon({ verification }: { verification: NgoVerification }) {
+  const Icon = ACTION_ICONS[verification];
+  return <Icon className="size-3.5" aria-hidden="true" />;
 }

@@ -1,4 +1,6 @@
 import { useState } from 'react';
+import { AnimatePresence } from 'motion/react';
+import { ListItem } from '../../components/motion/ListItem.tsx';
 import { Link, useNavigate, useSearchParams } from 'react-router';
 import {
   DIETARY_TYPES,
@@ -8,7 +10,12 @@ import {
 } from '@replate/shared';
 import { useMe } from '../../auth/context.ts';
 import { NearbyMap } from '../../components/map/NearbyMap.tsx';
+import { TabHighlight } from '../../components/motion/TabHighlight.tsx';
 import { Button } from '../../components/ui/Button.tsx';
+import {
+  NoMatchesIllustration,
+  NothingNearbyIllustration,
+} from '../../components/illustrations/EmptyStates.tsx';
 import { EmptyState, FullPageError, Spinner } from '../../components/ui/Feedback.tsx';
 import { SearchBar } from '../../components/ui/SearchBar.tsx';
 import { SelectField } from '../../components/ui/SelectField.tsx';
@@ -239,16 +246,17 @@ export function FindFoodPage() {
             type="button"
             aria-pressed={view === option}
             onClick={() => setView(option)}
-            className={`rounded-full px-4 py-1.5 text-sm font-semibold ${
-              view === option ? 'bg-forest text-cream' : 'border border-forest/20 text-forest'
+            className={`relative rounded-full px-4 py-1.5 text-sm font-semibold transition-colors ${
+              view === option ? 'text-cream' : 'border border-forest/20 text-forest'
             }`}
           >
-            {option === 'list' ? 'List' : 'Map'}
+            {view === option && <TabHighlight group="find-food-view" />}
+            <span className="relative">{option === 'list' ? 'List' : 'Map'}</span>
           </button>
         ))}
       </div>
 
-      <div className="mt-4 grid grid-cols-1 gap-6 lg:mt-6 lg:grid-cols-[minmax(0,1fr)_minmax(0,1.1fr)]">
+      <div className="mt-4 grid grid-cols-1 gap-6 lg:mt-6 lg:grid-cols-[minmax(0,1.4fr)_minmax(0,1fr)]">
         <div className={view === 'map' ? 'hidden lg:block' : ''} aria-busy={nearby.isFetching}>
           {nearby.isPending ? (
             <div className="grid place-items-center py-20 text-moss">
@@ -261,6 +269,7 @@ export function FindFoodPage() {
             />
           ) : list.length === 0 ? (
             <EmptyState
+              illustration={filtered ? <NoMatchesIllustration /> : <NothingNearbyIllustration />}
               title={filtered ? 'No matching donations' : 'Nothing nearby right now'}
               action={
                 filtered ? (
@@ -291,17 +300,21 @@ export function FindFoodPage() {
               <div
                 className={`grid grid-cols-1 gap-4 transition-opacity xl:grid-cols-2 ${nearby.isPlaceholderData ? 'opacity-60' : ''}`}
               >
-                {list.map((donation) => (
-                  <NearbyDonationCard
-                    key={donation.id}
-                    donation={donation}
-                    onClaim={() =>
-                      actions.request('claim', donation, () =>
-                        navigate(`/donations/${donation.id}`),
-                      )
-                    }
-                  />
-                ))}
+                {/* Cards fade and slide into place as filters and distance change the list. */}
+                <AnimatePresence mode="popLayout">
+                  {list.map((donation, index) => (
+                    <ListItem key={donation.id} index={index}>
+                      <NearbyDonationCard
+                        donation={donation}
+                        onClaim={() =>
+                          actions.request('claim', donation, () =>
+                            navigate(`/donations/${donation.id}`),
+                          )
+                        }
+                      />
+                    </ListItem>
+                  ))}
+                </AnimatePresence>
               </div>
             </>
           )}

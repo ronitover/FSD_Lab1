@@ -46,6 +46,7 @@ export function EditDonationPage() {
         <DonationForm
           initialValues={initialValues}
           submitLabel="Save changes"
+          mode="edit"
           onCancel={() => void navigate(`/donations/${id}`)}
           onSubmit={async (input) => {
             // Send only what changed, so an unchanged past time isn't re-checked against "now".
