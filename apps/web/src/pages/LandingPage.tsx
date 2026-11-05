@@ -28,11 +28,20 @@ import {
   Utensils,
   type LucideIcon,
 } from 'lucide-react';
-import type { ReactNode } from 'react';
+import * as m from 'motion/react-m';
+import {
+  useMotionValue,
+  useReducedMotion,
+  useSpring,
+  useTransform,
+  type MotionValue,
+  type Variants,
+} from 'motion/react';
+import { useEffect, type ReactNode } from 'react';
 import { Link } from 'react-router';
-import heroImage from '../assets/hero.png';
 import { HOME_BY_ROLE, useAuth } from '../auth/context.ts';
-import { Mascot } from '../components/mascot/Mascot.tsx';
+import { LazyMascot } from '../components/mascot/LazyMascot.tsx';
+import { inView, pop, rise, softSpring, staggerParent } from '../components/motion/variants.ts';
 import { FoodTypeMark } from '../components/ui/FoodVisuals.tsx';
 import { ThaliIllustration } from '../components/illustrations/Thali.tsx';
 import { buttonClasses } from '../components/ui/styles.ts';
@@ -125,17 +134,29 @@ export function LandingPage() {
           aria-hidden="true"
         />
 
-        <div className="max-w-xl">
-          <p className="inline-flex items-center gap-2 rounded-full border border-forest/10 bg-surface/70 px-3.5 py-1.5 text-xs font-semibold text-forest/80 shadow-sm backdrop-blur motion-safe:animate-fade-up">
+        <m.div
+          className="max-w-xl"
+          initial="hidden"
+          animate="shown"
+          variants={staggerParent(0.1, 0.05)}
+        >
+          <m.p
+            variants={rise}
+            className="inline-flex items-center gap-2 rounded-full border border-forest/10 bg-surface/70 px-3.5 py-1.5 text-xs font-semibold text-forest/80 shadow-sm backdrop-blur"
+          >
             <span className="relative flex size-2">
               <span className="absolute inset-0 rounded-full bg-moss motion-safe:animate-ping-soft" />
               <span className="relative size-2 rounded-full bg-moss" />
             </span>
             Rescuing surplus food across India
-          </p>
-          <h1 className="mt-6 font-display text-5xl leading-[1.02] font-medium tracking-[-0.03em] text-forest motion-safe:animate-fade-up motion-safe:[animation-delay:80ms] sm:text-6xl lg:text-7xl">
-            Good food,{' '}
-            <em className="relative font-normal text-moss">
+          </m.p>
+          {/* Each word rises into place; the underline under "shared" draws itself after. */}
+          <m.h1
+            variants={staggerParent(0.07)}
+            className="mt-6 font-display text-5xl leading-[1.02] font-medium tracking-[-0.03em] text-forest sm:text-6xl lg:text-7xl"
+          >
+            <Word>Good</Word> <Word>food,</Word>{' '}
+            <m.em variants={word} className="relative inline-block font-normal text-moss">
               shared
               <svg
                 viewBox="0 0 200 12"
@@ -143,22 +164,23 @@ export function LandingPage() {
                 preserveAspectRatio="none"
                 aria-hidden="true"
               >
-                <path
+                <m.path
                   d="M2 9C50 3 150 1 198 7"
                   fill="none"
                   stroke="currentColor"
                   strokeWidth="3"
                   strokeLinecap="round"
+                  variants={underline}
                 />
               </svg>
-            </em>{' '}
-            with purpose.
-          </h1>
-          <p className="mt-7 max-w-lg text-lg leading-8 text-forest/70 motion-safe:animate-fade-up motion-safe:[animation-delay:160ms]">
+            </m.em>{' '}
+            <Word>with</Word> <Word>purpose.</Word>
+          </m.h1>
+          <m.p variants={rise} className="mt-7 max-w-lg text-lg leading-8 text-forest/70">
             Leftover biryani from a wedding, extra rotis from a hostel mess, unsold bread from a
             bakery. RePlate gets it to a verified NGO nearby while it's still good to eat.
-          </p>
-          <div className="mt-8 flex flex-wrap gap-3 motion-safe:animate-fade-up motion-safe:[animation-delay:240ms]">
+          </m.p>
+          <m.div variants={rise} className="mt-8 flex flex-wrap gap-3">
             {home ? (
               <Link to={home} className={buttonClasses('primary', 'lg')}>
                 Go to your dashboard <ArrowRight className="size-4" aria-hidden="true" />
@@ -173,16 +195,19 @@ export function LandingPage() {
                 </Link>
               </>
             )}
-          </div>
-          <ul className="mt-8 flex flex-wrap gap-x-5 gap-y-2 text-sm text-forest/70 motion-safe:animate-fade-up motion-safe:[animation-delay:320ms]">
+          </m.div>
+          <m.ul
+            variants={staggerParent(0.08)}
+            className="mt-8 flex flex-wrap gap-x-5 gap-y-2 text-sm text-forest/70"
+          >
             {['Free for everyone', 'Verified NGOs only', 'No app to install'].map((item) => (
-              <li key={item} className="flex items-center gap-1.5">
+              <m.li key={item} variants={pop} className="flex items-center gap-1.5">
                 <Check className="size-4 text-moss" strokeWidth={2.5} aria-hidden="true" />
                 {item}
-              </li>
+              </m.li>
             ))}
-          </ul>
-        </div>
+          </m.ul>
+        </m.div>
 
         <HeroVisual />
       </section>
@@ -218,7 +243,7 @@ export function LandingPage() {
         aria-labelledby="how-title"
         className="mx-auto max-w-7xl px-4 py-16 sm:px-6 lg:px-10 lg:py-20"
       >
-        <div className="reveal grid gap-6 lg:grid-cols-2 lg:items-end">
+        <m.div {...inView} variants={rise} className="grid gap-6 lg:grid-cols-2 lg:items-end">
           <div>
             <Eyebrow>How it works</Eyebrow>
             <h2
@@ -232,17 +257,27 @@ export function LandingPage() {
             No paperwork and no app to install. Most donations go from listed to collected within a
             few hours, while the food is still fresh.
           </p>
-        </div>
+        </m.div>
         <div className="relative mt-14">
-          <div
-            className="absolute top-14 right-[16%] left-[16%] hidden border-t-2 border-dashed border-orange/30 md:block"
+          {/* The dashed route between the steps draws across as they arrive. */}
+          <m.div
+            className="absolute top-14 right-[16%] left-[16%] hidden origin-left border-t-2 border-dashed border-orange/30 md:block"
             aria-hidden="true"
+            initial={{ scaleX: 0 }}
+            whileInView={{ scaleX: 1 }}
+            viewport={{ once: true, amount: 0.5 }}
+            transition={{ duration: 1, delay: 0.3, ease: 'easeInOut' }}
           />
-          <ol className="relative grid gap-6 md:grid-cols-3">
+          <m.ol
+            {...inView}
+            variants={staggerParent(0.15)}
+            className="relative grid gap-6 md:grid-cols-3"
+          >
             {STEPS.map((step, index) => (
-              <li
+              <m.li
+                variants={rise}
                 key={step.title}
-                className="reveal group relative rounded-3xl bg-surface p-7 shadow-soft transition duration-300 hover:-translate-y-1 hover:shadow-lift"
+                className="group relative rounded-3xl bg-surface p-7 shadow-soft transition duration-300 hover:-translate-y-1 hover:shadow-lift"
               >
                 <div className="flex items-center justify-between">
                   <span className="flex size-14 items-center justify-center rounded-2xl bg-orange/15 text-orange transition duration-300 group-hover:scale-110 group-hover:rotate-[-4deg]">
@@ -254,9 +289,9 @@ export function LandingPage() {
                 </div>
                 <h3 className="mt-6 font-display text-2xl text-forest">{step.title}</h3>
                 <p className="mt-3 leading-7 text-forest/70">{step.text}</p>
-              </li>
+              </m.li>
             ))}
-          </ol>
+          </m.ol>
         </div>
       </section>
 
@@ -266,7 +301,7 @@ export function LandingPage() {
           <h2 id="who-title" className="sr-only">
             Who RePlate is for
           </h2>
-          <div className="grid gap-6 lg:grid-cols-2">
+          <m.div {...inView} variants={staggerParent(0.15)} className="grid gap-6 lg:grid-cols-2">
             <AudienceCard
               eyebrow="For donors"
               title="Have extra food? List it before it's wasted."
@@ -289,7 +324,7 @@ export function LandingPage() {
               cta={home ? undefined : { to: '/signup?role=ngo', label: 'Register your NGO' }}
               icon={Bike}
             />
-          </div>
+          </m.div>
         </div>
       </section>
 
@@ -299,7 +334,7 @@ export function LandingPage() {
         className="mx-auto max-w-7xl px-4 py-16 sm:px-6 lg:px-10 lg:py-20"
       >
         <div className="grid gap-12 lg:grid-cols-[0.8fr_1.2fr] lg:gap-16">
-          <div className="reveal lg:sticky lg:top-28 lg:self-start">
+          <m.div {...inView} variants={rise} className="lg:sticky lg:top-28 lg:self-start">
             <Eyebrow>Safe and trusted</Eyebrow>
             <h2
               id="trust-title"
@@ -324,12 +359,13 @@ export function LandingPage() {
                 </div>
               ))}
             </dl>
-          </div>
-          <ul className="grid gap-5 sm:grid-cols-2">
+          </m.div>
+          <m.ul {...inView} variants={staggerParent(0.08)} className="grid gap-5 sm:grid-cols-2">
             {TRUST.map((item) => (
-              <li
+              <m.li
+                variants={rise}
                 key={item.title}
-                className="reveal group flex gap-4 rounded-3xl bg-surface p-5 shadow-soft transition duration-300 hover:-translate-y-1 hover:shadow-lift sm:block sm:p-6"
+                className="group flex gap-4 rounded-3xl bg-surface p-5 shadow-soft transition duration-300 hover:-translate-y-1 hover:shadow-lift sm:block sm:p-6"
               >
                 {/* On phones the icon sits beside the text, so six cards don't fill two screens. */}
                 <span
@@ -344,16 +380,20 @@ export function LandingPage() {
                   </h3>
                   <p className="mt-1 text-sm leading-6 text-forest/70 sm:mt-2">{item.text}</p>
                 </div>
-              </li>
+              </m.li>
             ))}
-          </ul>
+          </m.ul>
         </div>
       </section>
 
       {/* Closing call to action */}
       {!home && (
         <section className="px-4 pb-20 sm:px-6 lg:px-10">
-          <div className="reveal relative mx-auto grid max-w-7xl items-center gap-8 overflow-hidden rounded-[2.5rem] bg-orange px-6 py-12 text-white sm:px-12 lg:grid-cols-[1.15fr_0.85fr] lg:py-14">
+          <m.div
+            {...inView}
+            variants={ctaReveal}
+            className="relative mx-auto grid max-w-7xl items-center gap-8 overflow-hidden rounded-[2.5rem] bg-orange px-6 py-12 text-white sm:px-12 lg:grid-cols-[1.15fr_0.85fr] lg:py-14"
+          >
             <CtaDoodles />
             <div className="relative order-2 text-center lg:order-1 lg:text-left">
               <h2 className="font-display text-4xl leading-tight tracking-tight sm:text-5xl">
@@ -377,30 +417,198 @@ export function LandingPage() {
                 </Link>
               </div>
             </div>
-            <ThaliIllustration className="relative order-1 mx-auto w-52 drop-shadow-xl motion-safe:animate-float-slow sm:w-64 lg:order-2 lg:w-80" />
-          </div>
+            <m.div
+              variants={{
+                hidden: { opacity: 0, rotate: -40, scale: 0.6 },
+                shown: {
+                  opacity: 1,
+                  rotate: 0,
+                  scale: 1,
+                  transition: { ...softSpring, delay: 0.25 },
+                },
+              }}
+              className="relative order-1 mx-auto lg:order-2"
+            >
+              <ThaliIllustration className="w-52 drop-shadow-xl motion-safe:animate-float-slow sm:w-64 lg:w-80" />
+            </m.div>
+          </m.div>
         </section>
       )}
     </div>
   );
 }
 
-/** The hero photo on a tilted backing. */
-function HeroVisual() {
+/** One headline word, rising into place. */
+const word: Variants = {
+  hidden: { opacity: 0, y: '0.5em', rotate: 3 },
+  shown: { opacity: 1, y: 0, rotate: 0, transition: softSpring },
+};
+
+const underline: Variants = {
+  hidden: { pathLength: 0 },
+  shown: { pathLength: 1, transition: { duration: 0.8, delay: 0.5, ease: 'easeInOut' } },
+};
+
+const ctaReveal: Variants = {
+  hidden: { opacity: 0, y: 40, scale: 0.96 },
+  shown: { opacity: 1, y: 0, scale: 1, transition: softSpring },
+};
+
+function Word({ children }: { children: ReactNode }) {
   return (
-    <div className="relative mx-auto w-full max-w-xl motion-safe:animate-fade-up motion-safe:[animation-delay:200ms] lg:justify-self-end">
-      <div
-        className="absolute -inset-3 -z-10 rotate-3 rounded-[2.75rem] bg-orange/20"
-        aria-hidden="true"
+    <m.span variants={word} className="inline-block">
+      {children}
+    </m.span>
+  );
+}
+
+/** A layer of the hero scene that drifts against the pointer; deeper layers move further. */
+function Layer({
+  depth,
+  pointer,
+  className,
+  children,
+}: {
+  depth: number;
+  pointer: { x: MotionValue<number>; y: MotionValue<number> };
+  className?: string;
+  children: ReactNode;
+}) {
+  const x = useTransform(pointer.x, (value) => value * depth);
+  const y = useTransform(pointer.y, (value) => value * depth);
+  return (
+    <m.div className={className} style={{ x, y }}>
+      {children}
+    </m.div>
+  );
+}
+
+const sceneIn: Variants = {
+  hidden: { opacity: 0, scale: 0.6 },
+  shown: { opacity: 1, scale: 1, transition: { type: 'spring', stiffness: 120, damping: 16 } },
+};
+
+/**
+ * The hero illustration: the chef handing a tiffin to an NGO volunteer, on soft circles in the
+ * brand colours, with the thali and food doodles around them. The pieces arrive one after another,
+ * and each layer drifts against the pointer at its own depth, so the scene feels deep.
+ */
+function HeroVisual() {
+  const still = useReducedMotion();
+  // Pointer position across the window, from -1 to 1, smoothed with a spring.
+  const rawX = useMotionValue(0);
+  const rawY = useMotionValue(0);
+  const pointer = {
+    x: useSpring(rawX, { stiffness: 50, damping: 18 }),
+    y: useSpring(rawY, { stiffness: 50, damping: 18 }),
+  };
+
+  useEffect(() => {
+    if (still) return;
+    function move(event: PointerEvent) {
+      rawX.set((event.clientX / window.innerWidth - 0.5) * 2);
+      rawY.set((event.clientY / window.innerHeight - 0.5) * 2);
+    }
+    window.addEventListener('pointermove', move);
+    return () => window.removeEventListener('pointermove', move);
+  }, [still, rawX, rawY]);
+
+  return (
+    <m.div
+      className="relative mx-auto aspect-square w-full max-w-xl lg:justify-self-end"
+      aria-hidden="true"
+      initial="hidden"
+      animate="shown"
+      variants={staggerParent(0.12, 0.25)}
+    >
+      {/* Backdrop circles, furthest back, so they move the opposite way */}
+      <Layer depth={-10} pointer={pointer} className="absolute inset-[4%]">
+        <m.div variants={sceneIn} className="size-full rounded-full bg-orange/15" />
+      </Layer>
+      <Layer depth={-5} pointer={pointer} className="absolute inset-[16%]">
+        <m.div variants={sceneIn} className="size-full rounded-full bg-sage/25" />
+      </Layer>
+      <m.div
+        variants={sceneIn}
+        className="absolute inset-[4%] rounded-full border-2 border-dashed border-orange/25 motion-safe:animate-[spin_60s_linear_infinite]"
       />
-      <img
-        src={heroImage}
-        alt="Volunteers serving food from a large pot"
-        className="aspect-[1.05/1] w-full rounded-[2.5rem] object-cover shadow-lift"
-      />
-      {/* The mascot peeks over the photo's corner and watches the pointer. */}
-      <Mascot className="absolute -bottom-10 -left-4 size-28 drop-shadow-xl motion-safe:animate-float sm:-left-10 sm:size-36" />
-    </div>
+
+      {/* Food doodles drifting around the circle, nearest to the viewer */}
+      {[
+        {
+          Icon: Leaf,
+          place: 'top-[10%] right-[12%] size-9 rotate-12 text-moss',
+          float: 'motion-safe:animate-float',
+        },
+        {
+          Icon: Wheat,
+          place: 'top-[44%] left-[1%] size-10 rotate-12 text-orange',
+          float: 'motion-safe:animate-float-slow',
+        },
+        {
+          Icon: Carrot,
+          place: 'right-[2%] bottom-[34%] size-9 rotate-[20deg] text-orange',
+          float: 'motion-safe:animate-float',
+        },
+        {
+          Icon: Cherry,
+          place: 'top-[6%] left-[42%] size-8 text-moss/80',
+          float: 'motion-safe:animate-float-slow',
+        },
+      ].map(({ Icon, place, float }) => (
+        <Layer key={place} depth={16} pointer={pointer} className={`absolute ${place}`}>
+          <m.div variants={pop} whileHover={{ rotate: 20, scale: 1.2 }}>
+            <Icon className={`size-full ${float}`} strokeWidth={1.75} />
+          </m.div>
+        </Layer>
+      ))}
+      <span className="absolute right-[7%] bottom-[24%] size-2.5 rounded-full bg-orange motion-safe:animate-ping-soft" />
+      <span className="absolute bottom-[18%] left-[8%] size-2 rounded-full bg-moss" />
+
+      {/* The thali swoops in and floats */}
+      <Layer depth={22} pointer={pointer} className="absolute top-[2%] left-[2%] w-[28%]">
+        <m.div
+          variants={{
+            hidden: { opacity: 0, y: -60, rotate: -60 },
+            shown: {
+              opacity: 1,
+              y: 0,
+              rotate: -12,
+              transition: { type: 'spring', stiffness: 90, damping: 12 },
+            },
+          }}
+        >
+          <ThaliIllustration className="w-full drop-shadow-lg motion-safe:animate-float-slow" />
+        </m.div>
+      </Layer>
+
+      {/* The pair rises up behind the counter, then the volunteer says thank you */}
+      <Layer depth={6} pointer={pointer} className="absolute inset-x-[4%] bottom-[8%]">
+        <m.div
+          variants={{
+            hidden: { opacity: 0, y: 60 },
+            shown: { opacity: 1, y: 0, transition: { type: 'spring', stiffness: 90, damping: 15 } },
+          }}
+        >
+          <LazyMascot className="w-full drop-shadow-xl" />
+        </m.div>
+        <m.div
+          className="absolute top-[-2%] right-[6%] origin-bottom-left"
+          variants={{
+            hidden: { opacity: 0, scale: 0 },
+            shown: {
+              opacity: 1,
+              scale: 1,
+              transition: { type: 'spring', stiffness: 260, damping: 14, delay: 0.9 },
+            },
+          }}
+        >
+          <div className="rounded-2xl rounded-bl-sm border-2 border-forest bg-surface px-3 py-1.5 font-display text-sm font-semibold text-forest shadow-soft motion-safe:animate-float sm:text-base">
+            Thank you!
+          </div>
+        </m.div>
+      </Layer>
+    </m.div>
   );
 }
 
@@ -429,7 +637,10 @@ function AudienceCard({
   icon: LucideIcon;
 }) {
   return (
-    <div className="reveal group relative overflow-hidden rounded-[2rem] border border-white/10 bg-white/5 p-8 transition duration-300 hover:bg-white/[0.08] sm:p-10">
+    <m.div
+      variants={rise}
+      className="group relative overflow-hidden rounded-[2rem] border border-white/10 bg-white/5 p-8 transition-colors duration-300 hover:bg-white/[0.08] sm:p-10"
+    >
       <Icon
         className="absolute -right-6 -bottom-6 size-40 text-white/5 transition duration-500 group-hover:-rotate-6 group-hover:scale-110"
         strokeWidth={1}
@@ -453,7 +664,7 @@ function AudienceCard({
           {cta.label} <ArrowRight className="size-4" aria-hidden="true" />
         </Link>
       )}
-    </div>
+    </m.div>
   );
 }
 
