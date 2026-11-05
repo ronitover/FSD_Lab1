@@ -48,6 +48,39 @@
   --animate-blob: blob 18s ease-in-out infinite;
   --animate-ping-soft: ping-soft 2s cubic-bezier(0, 0, 0.2, 1) infinite;
   --animate-steam: steam 3s ease-in-out infinite;
+  --animate-pop: pop 0.5s cubic-bezier(0.34, 1.56, 0.64, 1) both;
+  --animate-draw: draw 0.6s 0.25s ease-out both;
+  --animate-burst: burst 0.9s 0.2s ease-out both;
+
+  @keyframes pop {
+    from {
+      transform: scale(0.4);
+      opacity: 0;
+    }
+    to {
+      transform: scale(1);
+      opacity: 1;
+    }
+  }
+  @keyframes draw {
+    from {
+      stroke-dashoffset: 30;
+    }
+    to {
+      stroke-dashoffset: 0;
+    }
+  }
+  /* Each dot sets --x and --y for where it flies to. */
+  @keyframes burst {
+    from {
+      transform: translate(0, 0) scale(1);
+      opacity: 1;
+    }
+    to {
+      transform: translate(var(--x), var(--y)) scale(0.3);
+      opacity: 0;
+    }
+  }
 
   @keyframes steam {
     0% {
