@@ -1,7 +1,6 @@
-import { Check, Clock, Navigation, Utensils } from 'lucide-react';
+import { Check } from 'lucide-react';
 import type { ReactNode } from 'react';
 import heroImage from '../../assets/hero.png';
-import { FoodTypeMark } from '../ui/FoodVisuals.tsx';
 import { LogoMark } from './Logo.tsx';
 
 const POINTS = [
@@ -57,7 +56,7 @@ function BrandPanel() {
 
       {/* Phones: a short banner. */}
       <div className="flex items-center gap-4 p-5 lg:hidden">
-        <LogoMark className="size-12 shrink-0 [&_.fill-forest]:fill-white/10 [&_.stroke-cream]:stroke-[#f7f5ef] [&_.stroke-cream\/45]:stroke-[#f7f5ef]/45" />
+        <LogoMark tone="light" className="size-12 shrink-0" />
         <p className="font-display text-xl leading-snug">
           Good food deserves <em className="text-[#e8894f]">another plate.</em>
         </p>
@@ -65,7 +64,7 @@ function BrandPanel() {
 
       {/* Larger screens: the full panel. */}
       <div className="hidden h-full min-h-[36rem] flex-col justify-between gap-10 p-10 lg:flex">
-        <LogoMark className="size-14 [&_.fill-forest]:fill-white/10 [&_.stroke-cream]:stroke-[#f7f5ef] [&_.stroke-cream\/45]:stroke-[#f7f5ef]/45" />
+        <LogoMark tone="light" className="size-14" />
 
         <div>
           <p className="font-display text-4xl leading-tight tracking-tight xl:text-5xl">
@@ -85,28 +84,6 @@ function BrandPanel() {
               </li>
             ))}
           </ul>
-        </div>
-
-        <div className="w-72 rounded-2xl bg-[#f7f5ef] p-4 text-[#173b2a] shadow-2xl motion-safe:animate-float">
-          <div className="flex items-center gap-3">
-            <span className="flex size-10 items-center justify-center rounded-xl bg-orange-100 text-orange-700">
-              <Utensils className="size-5" />
-            </span>
-            <div>
-              <p className="flex items-center gap-1.5 text-sm font-bold">
-                <FoodTypeMark type="veg" className="size-3.5" /> Dal, rice and sabzi
-              </p>
-              <p className="text-xs text-[#173b2a]/60">60 servings · hostel mess</p>
-            </div>
-          </div>
-          <div className="mt-3 flex gap-2 text-[11px] font-semibold">
-            <span className="flex items-center gap-1 rounded-full bg-[#e8894f]/15 px-2 py-0.5 text-[#c0652d]">
-              <Clock className="size-3" /> in 2 hours
-            </span>
-            <span className="flex items-center gap-1 rounded-full bg-[#496a4c]/15 px-2 py-0.5 text-[#496a4c]">
-              <Navigation className="size-3" /> 2.3 km
-            </span>
-          </div>
         </div>
       </div>
     </aside>

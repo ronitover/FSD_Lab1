@@ -1,18 +1,24 @@
 import {
+  Apple,
   ArrowRight,
+  Carrot,
+  Cherry,
+  Leaf,
+  Salad,
+  Soup,
+  Wheat,
   Bike,
   Building2,
   CakeSlice,
   Check,
   ChefHat,
   Clock,
-  Croissant,
   HandHeart,
   Hotel,
   Landmark,
+  ListChecks,
   LockKeyhole,
   MapPinned,
-  Navigation,
   PartyPopper,
   ShieldCheck,
   ShoppingBasket,
@@ -27,6 +33,7 @@ import { Link } from 'react-router';
 import heroImage from '../assets/hero.png';
 import { HOME_BY_ROLE, useAuth } from '../auth/context.ts';
 import { FoodTypeMark } from '../components/ui/FoodVisuals.tsx';
+import { ThaliIllustration } from '../components/illustrations/Thali.tsx';
 import { buttonClasses } from '../components/ui/styles.ts';
 
 /** Where surplus food comes from in Indian cities. Shown as a scrolling strip. */
@@ -61,6 +68,12 @@ const STEPS: { title: string; text: string; icon: LucideIcon }[] = [
   },
 ];
 
+const FOOD_MARKS = {
+  veg: { title: 'Veg', text: 'Green square with a dot' },
+  non_veg: { title: 'Non-veg', text: 'Brown square with a triangle' },
+  vegan: { title: 'Vegan', text: 'Green square with a leaf' },
+};
+
 const TRUST: { title: string; text: string; icon: ReactNode }[] = [
   {
     title: 'Verified NGOs only',
@@ -68,14 +81,9 @@ const TRUST: { title: string; text: string; icon: ReactNode }[] = [
     icon: <ShieldCheck className="size-6" />,
   },
   {
-    title: 'Veg and non-veg, clearly marked',
-    text: 'Every listing carries the familiar green and brown marks, plus allergens like nuts, gluten and dairy.',
-    icon: (
-      <span className="flex gap-1">
-        <FoodTypeMark type="veg" className="size-5" />
-        <FoodTypeMark type="non_veg" className="size-5" />
-      </span>
-    ),
+    title: 'Allergens listed',
+    text: 'Donors tick common allergens like nuts, gluten, dairy and egg, or add their own.',
+    icon: <ListChecks className="size-6" />,
   },
   {
     title: 'Collect-by times',
@@ -96,29 +104,6 @@ const TRUST: { title: string; text: string; icon: ReactNode }[] = [
     title: 'Works on any phone',
     text: 'No app to install. RePlate runs in the browser and is built for small screens first.',
     icon: <Smartphone className="size-6" />,
-  },
-];
-
-const FAQS: { q: string; a: string }[] = [
-  {
-    q: 'Is RePlate free?',
-    a: 'Yes. Listing food and claiming it are both free, for donors and for NGOs.',
-  },
-  {
-    q: 'What food can I donate?',
-    a: "Food that is still safe to eat: cooked meals kept hygienically, fresh produce, bakery items, sealed packaged food before its expiry, and dairy kept cold. Follow FSSAI's food safety guidance, and never list food you wouldn't serve yourself.",
-  },
-  {
-    q: 'Who can claim my donation?',
-    a: 'Only NGOs that a RePlate admin has verified. Each donation can be claimed by one NGO, and you can see who claimed it and call them.',
-  },
-  {
-    q: "What if the NGO can't make it?",
-    a: 'They release the claim and your donation goes straight back to other NGOs nearby. You can also cancel a donation at any time before it is collected.',
-  },
-  {
-    q: 'How does an NGO get verified?',
-    a: 'Sign up as an NGO with your organisation details and, ideally, your NGO Darpan ID. An admin reviews it, usually within a day or two.',
   },
 ];
 
@@ -230,16 +215,22 @@ export function LandingPage() {
       {/* How it works */}
       <section
         aria-labelledby="how-title"
-        className="mx-auto max-w-7xl px-4 py-20 sm:px-6 lg:px-10 lg:py-28"
+        className="mx-auto max-w-7xl px-4 py-16 sm:px-6 lg:px-10 lg:py-20"
       >
-        <div className="reveal max-w-2xl">
-          <Eyebrow>How it works</Eyebrow>
-          <h2
-            id="how-title"
-            className="mt-4 font-display text-4xl leading-tight tracking-tight text-forest sm:text-5xl"
-          >
-            A simple route from surplus to <em className="font-normal text-moss">shared.</em>
-          </h2>
+        <div className="reveal grid gap-6 lg:grid-cols-2 lg:items-end">
+          <div>
+            <Eyebrow>How it works</Eyebrow>
+            <h2
+              id="how-title"
+              className="mt-4 font-display text-4xl leading-tight tracking-tight text-forest sm:text-5xl"
+            >
+              A simple route from surplus to <em className="font-normal text-moss">shared.</em>
+            </h2>
+          </div>
+          <p className="max-w-md text-lg leading-8 text-forest/70 lg:justify-self-end">
+            No paperwork and no app to install. Most donations go from listed to collected within a
+            few hours, while the food is still fresh.
+          </p>
         </div>
         <div className="relative mt-14">
           <div
@@ -304,97 +295,83 @@ export function LandingPage() {
       {/* Trust and safety */}
       <section
         aria-labelledby="trust-title"
-        className="mx-auto max-w-7xl px-4 py-20 sm:px-6 lg:px-10 lg:py-28"
+        className="mx-auto max-w-7xl px-4 py-16 sm:px-6 lg:px-10 lg:py-20"
       >
-        <div className="reveal max-w-2xl">
-          <Eyebrow>Safe and trusted</Eyebrow>
-          <h2
-            id="trust-title"
-            className="mt-4 font-display text-4xl leading-tight tracking-tight text-forest sm:text-5xl"
-          >
-            Built so food <em className="font-normal text-moss">and people</em> are looked after.
-          </h2>
-        </div>
-        <ul className="mt-12 grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
-          {TRUST.map((item) => (
-            <li
-              key={item.title}
-              className="reveal group rounded-3xl border border-forest/10 bg-surface/70 p-6 transition duration-300 hover:border-moss/40 hover:bg-surface hover:shadow-soft"
+        <div className="grid gap-12 lg:grid-cols-[0.8fr_1.2fr] lg:gap-16">
+          <div className="reveal lg:sticky lg:top-28 lg:self-start">
+            <Eyebrow>Safe and trusted</Eyebrow>
+            <h2
+              id="trust-title"
+              className="mt-4 font-display text-4xl leading-tight tracking-tight text-forest sm:text-5xl"
             >
-              <span
-                className="flex size-12 items-center justify-center rounded-2xl bg-moss/15 text-moss transition duration-300 group-hover:scale-110"
-                aria-hidden="true"
+              Built so food <em className="font-normal text-moss">and people</em> are looked after.
+            </h2>
+            <p className="mt-5 max-w-md leading-7 text-forest/70">
+              Donated food has to be safe, and the people sharing it have to trust each other. Every
+              listing says exactly what the food is, and only checked organisations can claim it.
+            </p>
+            <dl className="mt-8 max-w-sm divide-y divide-forest/10 rounded-3xl bg-surface p-2 shadow-soft">
+              {(['veg', 'non_veg', 'vegan'] as const).map((type) => (
+                <div key={type} className="flex items-center gap-4 px-4 py-3">
+                  <dt>
+                    <FoodTypeMark type={type} className="size-6" />
+                  </dt>
+                  <dd className="text-sm text-forest/75">
+                    <strong className="block text-forest">{FOOD_MARKS[type].title}</strong>
+                    {FOOD_MARKS[type].text}
+                  </dd>
+                </div>
+              ))}
+            </dl>
+          </div>
+          <ul className="grid gap-5 sm:grid-cols-2">
+            {TRUST.map((item) => (
+              <li
+                key={item.title}
+                className="reveal group rounded-3xl bg-surface p-6 shadow-soft transition duration-300 hover:-translate-y-1 hover:shadow-lift"
               >
-                {item.icon}
-              </span>
-              <h3 className="mt-5 text-lg font-bold text-forest">{item.title}</h3>
-              <p className="mt-2 text-sm leading-6 text-forest/70">{item.text}</p>
-            </li>
-          ))}
-        </ul>
-      </section>
-
-      {/* FAQ */}
-      <section
-        aria-labelledby="faq-title"
-        className="mx-auto max-w-3xl px-4 pb-20 sm:px-6 lg:pb-28"
-      >
-        <div className="reveal text-center">
-          <Eyebrow centered>Questions</Eyebrow>
-          <h2 id="faq-title" className="mt-4 font-display text-4xl tracking-tight text-forest">
-            Good to know
-          </h2>
-        </div>
-        <div className="mt-10 space-y-3">
-          {FAQS.map((faq) => (
-            <details
-              key={faq.q}
-              className="reveal group rounded-2xl bg-surface shadow-soft open:shadow-lift [&_summary::-webkit-details-marker]:hidden"
-            >
-              <summary className="flex cursor-pointer list-none items-center justify-between gap-4 px-6 py-5 font-semibold text-forest">
-                {faq.q}
                 <span
-                  className="flex size-7 shrink-0 items-center justify-center rounded-full bg-forest/5 text-lg leading-none transition duration-300 group-open:rotate-45"
+                  className="flex size-12 items-center justify-center rounded-2xl bg-moss/15 text-moss transition duration-300 group-hover:scale-110"
                   aria-hidden="true"
                 >
-                  +
+                  {item.icon}
                 </span>
-              </summary>
-              <p className="px-6 pb-6 text-sm leading-7 text-forest/70">{faq.a}</p>
-            </details>
-          ))}
+                <h3 className="mt-5 text-lg font-bold text-forest">{item.title}</h3>
+                <p className="mt-2 text-sm leading-6 text-forest/70">{item.text}</p>
+              </li>
+            ))}
+          </ul>
         </div>
       </section>
 
       {/* Closing call to action */}
       {!home && (
         <section className="px-4 pb-20 sm:px-6 lg:px-10">
-          <div className="reveal relative mx-auto max-w-7xl overflow-hidden rounded-[2.5rem] bg-orange px-6 py-14 text-center text-white sm:px-12">
-            <div
-              className="pointer-events-none absolute -top-20 -right-20 size-72 rounded-full bg-white/15 blur-2xl motion-safe:animate-blob"
-              aria-hidden="true"
-            />
-            <HandHeart className="mx-auto size-10" strokeWidth={1.5} aria-hidden="true" />
-            <h2 className="mx-auto mt-5 max-w-2xl font-display text-4xl leading-tight tracking-tight sm:text-5xl">
-              Tonight's extra food could be someone's dinner.
-            </h2>
-            <p className="mx-auto mt-4 max-w-lg text-white/85">
-              It takes a minute to sign up and a minute to list. NGOs nearby see it straight away.
-            </p>
-            <div className="mt-8 flex flex-wrap justify-center gap-3">
-              <Link
-                to="/signup?role=donor"
-                className="inline-flex items-center gap-2 rounded-full bg-white px-7 py-3.5 text-sm font-bold text-[#173b2a] transition duration-200 hover:shadow-xl active:scale-[0.97]"
-              >
-                Donate food <ArrowRight className="size-4" aria-hidden="true" />
-              </Link>
-              <Link
-                to="/signup?role=ngo"
-                className="inline-flex items-center rounded-full border border-white/60 px-7 py-3.5 text-sm font-bold text-white transition duration-200 hover:bg-white/10 active:scale-[0.97]"
-              >
-                Register your NGO
-              </Link>
+          <div className="reveal relative mx-auto grid max-w-7xl items-center gap-8 overflow-hidden rounded-[2.5rem] bg-orange px-6 py-12 text-white sm:px-12 lg:grid-cols-[1.15fr_0.85fr] lg:py-14">
+            <CtaDoodles />
+            <div className="relative order-2 text-center lg:order-1 lg:text-left">
+              <h2 className="font-display text-4xl leading-tight tracking-tight sm:text-5xl">
+                Tonight's extra food could be someone's dinner.
+              </h2>
+              <p className="mx-auto mt-4 max-w-lg text-white/85 lg:mx-0">
+                It takes a minute to sign up and a minute to list. NGOs nearby see it straight away.
+              </p>
+              <div className="mt-8 flex flex-wrap justify-center gap-3 lg:justify-start">
+                <Link
+                  to="/signup?role=donor"
+                  className="inline-flex items-center gap-2 rounded-full bg-white px-7 py-3.5 text-sm font-bold text-[#173b2a] transition duration-200 hover:shadow-xl active:scale-[0.97]"
+                >
+                  Donate food <ArrowRight className="size-4" aria-hidden="true" />
+                </Link>
+                <Link
+                  to="/signup?role=ngo"
+                  className="inline-flex items-center rounded-full border border-white/60 px-7 py-3.5 text-sm font-bold text-white transition duration-200 hover:bg-white/10 active:scale-[0.97]"
+                >
+                  Register your NGO
+                </Link>
+              </div>
             </div>
+            <ThaliIllustration className="relative order-1 mx-auto w-52 drop-shadow-xl motion-safe:animate-float-slow sm:w-64 lg:order-2 lg:w-80" />
           </div>
         </section>
       )}
@@ -402,7 +379,7 @@ export function LandingPage() {
   );
 }
 
-/** The hero photo with example listing cards floating over it, to show what the app does at a glance. */
+/** The hero photo on a tilted backing. */
 function HeroVisual() {
   return (
     <div className="relative mx-auto w-full max-w-xl motion-safe:animate-fade-up motion-safe:[animation-delay:200ms] lg:justify-self-end">
@@ -415,46 +392,6 @@ function HeroVisual() {
         alt="Volunteers serving food from a large pot"
         className="aspect-[1.05/1] w-full rounded-[2.5rem] object-cover shadow-lift"
       />
-
-      {/* Decorative example cards; the same information is in the text around them. */}
-      <div aria-hidden="true">
-        <div className="absolute -top-5 -left-3 w-56 rounded-2xl bg-surface p-3.5 shadow-lift motion-safe:animate-float sm:-left-10 sm:w-64">
-          <div className="flex items-center gap-3">
-            <span className="flex size-10 items-center justify-center rounded-xl bg-orange-100 text-orange-700 dark:bg-orange-400/15 dark:text-orange-300">
-              <Utensils className="size-5" />
-            </span>
-            <div className="min-w-0">
-              <p className="flex items-center gap-1.5 text-sm font-bold text-forest">
-                <FoodTypeMark type="veg" className="size-3.5" /> Veg biryani
-              </p>
-              <p className="text-xs text-forest/60">40 servings · wedding hall</p>
-            </div>
-          </div>
-          <div className="mt-3 flex gap-2 text-[11px] font-semibold">
-            <span className="flex items-center gap-1 rounded-full bg-orange/15 px-2 py-0.5 text-orange">
-              <Clock className="size-3" /> in 3 hours
-            </span>
-            <span className="flex items-center gap-1 rounded-full bg-moss/15 px-2 py-0.5 text-moss">
-              <Navigation className="size-3" /> 1.5 km
-            </span>
-          </div>
-        </div>
-
-        <div className="absolute -right-2 bottom-20 rounded-2xl bg-surface px-4 py-3 shadow-lift motion-safe:animate-float-slow motion-safe:[animation-delay:-3s] sm:-right-8">
-          <p className="flex items-center gap-2 text-sm font-bold text-forest">
-            <span className="flex size-6 items-center justify-center rounded-full bg-moss text-white">
-              <Check className="size-3.5" strokeWidth={3} />
-            </span>
-            Claimed by a verified NGO
-          </p>
-        </div>
-
-        <div className="absolute bottom-5 left-5 flex items-center gap-2 rounded-2xl bg-surface/90 px-4 py-2.5 shadow-soft backdrop-blur motion-safe:animate-float motion-safe:[animation-delay:-1.5s]">
-          <Croissant className="size-5 text-amber-600" />
-          <p className="text-sm font-semibold text-forest">35 loaves · bakery</p>
-          <FoodTypeMark type="vegan" className="size-3.5" />
-        </div>
-      </div>
     </div>
   );
 }
@@ -508,6 +445,27 @@ function AudienceCard({
           {cta.label} <ArrowRight className="size-4" aria-hidden="true" />
         </Link>
       )}
+    </div>
+  );
+}
+
+/** Faint food doodles scattered behind the closing call to action. */
+const DOODLES: { icon: LucideIcon; className: string }[] = [
+  { icon: Wheat, className: 'top-6 left-8 size-12 rotate-[-15deg]' },
+  { icon: Carrot, className: 'bottom-8 left-[38%] hidden size-10 rotate-[20deg] lg:block' },
+  { icon: Leaf, className: 'top-10 left-[45%] hidden size-9 rotate-12 lg:block' },
+  { icon: Soup, className: 'bottom-6 left-6 size-11 rotate-6' },
+  { icon: Apple, className: 'bottom-10 left-[24%] hidden size-8 -rotate-12 lg:block' },
+  { icon: Cherry, className: 'top-6 right-10 size-10 rotate-12' },
+  { icon: Salad, className: 'right-8 bottom-6 size-12 -rotate-6' },
+];
+
+function CtaDoodles() {
+  return (
+    <div className="pointer-events-none absolute inset-0" aria-hidden="true">
+      {DOODLES.map(({ icon: Icon, className }) => (
+        <Icon key={className} className={`absolute text-white/15 ${className}`} strokeWidth={1.5} />
+      ))}
     </div>
   );
 }
