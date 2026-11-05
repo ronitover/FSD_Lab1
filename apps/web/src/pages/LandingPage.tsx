@@ -328,16 +328,21 @@ export function LandingPage() {
             {TRUST.map((item) => (
               <li
                 key={item.title}
-                className="reveal group rounded-3xl bg-surface p-6 shadow-soft transition duration-300 hover:-translate-y-1 hover:shadow-lift"
+                className="reveal group flex gap-4 rounded-3xl bg-surface p-5 shadow-soft transition duration-300 hover:-translate-y-1 hover:shadow-lift sm:block sm:p-6"
               >
+                {/* On phones the icon sits beside the text, so six cards don't fill two screens. */}
                 <span
-                  className="flex size-12 items-center justify-center rounded-2xl bg-moss/15 text-moss transition duration-300 group-hover:scale-110"
+                  className="flex size-11 shrink-0 items-center justify-center rounded-2xl bg-moss/15 text-moss transition duration-300 group-hover:scale-110 sm:size-12"
                   aria-hidden="true"
                 >
                   {item.icon}
                 </span>
-                <h3 className="mt-5 text-lg font-bold text-forest">{item.title}</h3>
-                <p className="mt-2 text-sm leading-6 text-forest/70">{item.text}</p>
+                <div>
+                  <h3 className="text-base font-bold text-forest sm:mt-5 sm:text-lg">
+                    {item.title}
+                  </h3>
+                  <p className="mt-1 text-sm leading-6 text-forest/70 sm:mt-2">{item.text}</p>
+                </div>
               </li>
             ))}
           </ul>
