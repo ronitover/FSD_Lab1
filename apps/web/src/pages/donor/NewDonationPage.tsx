@@ -16,7 +16,7 @@ export function NewDonationPage() {
       <title>Donate food · RePlate</title>
       <h1 className="font-display text-4xl tracking-tight text-forest">Donate food</h1>
       <p className="mt-2 text-forest/65">
-        Verified NGOs near the pickup point will see your listing straight away.
+        Three quick steps. Verified NGOs nearby see your listing as soon as you post it.
       </p>
       <div className="mt-8">
         <DonationForm
