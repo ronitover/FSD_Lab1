@@ -26,3 +26,22 @@ function pinIcon(fill: string) {
 
 export const PICKUP_ICON = pinIcon('#e8894f');
 export const HOME_ICON = pinIcon('#173b2a');
+
+const countIcons = new Map<number, L.DivIcon>();
+
+/** A pickup pin with a number in it, for several donations at one address. */
+export function countPinIcon(count: number): L.DivIcon {
+  let icon = countIcons.get(count);
+  if (!icon) {
+    const label = count > 9 ? '9+' : String(count);
+    icon = L.divIcon({
+      html: `<svg viewBox="0 0 32 42" width="36" height="47" aria-hidden="true"><path d="M16 1C7.7 1 1 7.6 1 15.8 1 27 16 41 16 41s15-14 15-25.2C31 7.6 24.3 1 16 1Z" fill="#e8894f" stroke="#fff" stroke-width="2"/><circle cx="16" cy="15.5" r="9" fill="#fff"/><text x="16" y="20" text-anchor="middle" font-size="12" font-weight="800" font-family="Plus Jakarta Sans, system-ui, sans-serif" fill="#c0652d">${label}</text></svg>`,
+      className: 'replate-pin',
+      iconSize: [36, 47],
+      iconAnchor: [18, 46],
+      popupAnchor: [0, -40],
+    });
+    countIcons.set(count, icon);
+  }
+  return icon;
+}

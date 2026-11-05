@@ -1,7 +1,14 @@
 import { useEffect, type ReactNode } from 'react';
 import { latLng } from 'leaflet';
 import { Circle, MapContainer, Marker, Popup, TileLayer, useMap } from 'react-leaflet';
-import { HOME_ICON, PICKUP_ICON, TILE_ATTRIBUTION, TILE_URL } from './leaflet-setup.ts';
+import { groupByPosition } from './groupPoints.ts';
+import {
+  countPinIcon,
+  HOME_ICON,
+  PICKUP_ICON,
+  TILE_ATTRIBUTION,
+  TILE_URL,
+} from './leaflet-setup.ts';
 import type { LatLng } from './LocationPicker.tsx';
 
 export interface MapPoint {
@@ -29,8 +36,12 @@ function FitRadius({ origin, radiusKm }: { origin: LatLng; radiusKm: number }) {
   return null;
 }
 
-/** The search area around an NGO, with a pin for each donation in it. */
+/**
+ * The search area around an NGO, with a pin for each place that has donations.
+ * Donations at the same address share one pin with a count, and its popup lists them all.
+ */
 export function NearbyMap({ origin, radiusKm, points, className = 'h-96' }: NearbyMapProps) {
+  const groups = groupByPosition(points);
   return (
     <div className="overflow-hidden rounded-3xl border border-forest/15">
       <MapContainer
@@ -52,17 +63,40 @@ export function NearbyMap({ origin, radiusKm, points, className = 'h-96' }: Near
           title="Searching from here"
           alt="Searching from here"
         />
-        {points.map((point) => (
-          <Marker
-            key={point.id}
-            position={[point.lat, point.lng]}
-            icon={PICKUP_ICON}
-            title={point.label}
-            alt={point.label}
-          >
-            <Popup>{point.popup}</Popup>
-          </Marker>
-        ))}
+        {groups.map((group) => {
+          const [first] = group.points;
+          if (!first) return null;
+          const many = group.points.length > 1;
+          const label = many ? `${group.points.length} donations here` : first.label;
+          return (
+            <Marker
+              key={first.id}
+              position={[group.lat, group.lng]}
+              icon={many ? countPinIcon(group.points.length) : PICKUP_ICON}
+              title={label}
+              alt={label}
+            >
+              <Popup>
+                {many ? (
+                  <div className="min-w-48">
+                    <p className="mb-2 text-xs font-bold tracking-wider text-moss uppercase">
+                      {label}
+                    </p>
+                    <ul className="max-h-56 divide-y divide-forest/10 overflow-y-auto">
+                      {group.points.map((point) => (
+                        <li key={point.id} className="py-2 first:pt-0 last:pb-0">
+                          {point.popup}
+                        </li>
+                      ))}
+                    </ul>
+                  </div>
+                ) : (
+                  first.popup
+                )}
+              </Popup>
+            </Marker>
+          );
+        })}
       </MapContainer>
     </div>
   );
