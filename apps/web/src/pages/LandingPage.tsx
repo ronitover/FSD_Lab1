@@ -32,6 +32,7 @@ import type { ReactNode } from 'react';
 import { Link } from 'react-router';
 import heroImage from '../assets/hero.png';
 import { HOME_BY_ROLE, useAuth } from '../auth/context.ts';
+import { Mascot } from '../components/mascot/Mascot.tsx';
 import { FoodTypeMark } from '../components/ui/FoodVisuals.tsx';
 import { ThaliIllustration } from '../components/illustrations/Thali.tsx';
 import { buttonClasses } from '../components/ui/styles.ts';
@@ -397,6 +398,8 @@ function HeroVisual() {
         alt="Volunteers serving food from a large pot"
         className="aspect-[1.05/1] w-full rounded-[2.5rem] object-cover shadow-lift"
       />
+      {/* The mascot peeks over the photo's corner and watches the pointer. */}
+      <Mascot className="absolute -bottom-10 -left-4 size-28 drop-shadow-xl motion-safe:animate-float sm:-left-10 sm:size-36" />
     </div>
   );
 }

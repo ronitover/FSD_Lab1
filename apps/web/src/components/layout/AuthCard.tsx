@@ -1,6 +1,7 @@
 import { Check } from 'lucide-react';
-import type { ReactNode } from 'react';
+import { useState, type FocusEvent, type ReactNode } from 'react';
 import heroImage from '../../assets/hero.png';
+import { Mascot } from '../mascot/Mascot.tsx';
 import { LogoMark } from './Logo.tsx';
 
 const POINTS = [
@@ -24,11 +25,24 @@ export function AuthCard({
   children: ReactNode;
   footer?: ReactNode;
 }) {
+  // The mascot looks away (shuts its eyes) while a password field has focus.
+  const [typingPassword, setTypingPassword] = useState(false);
+  const watchFocus = (event: FocusEvent) =>
+    setTypingPassword(
+      event.type === 'focus' &&
+        event.target instanceof HTMLInputElement &&
+        event.target.type === 'password',
+    );
+
   return (
     <div className="mx-auto grid w-full max-w-6xl gap-6 px-4 py-6 sm:px-6 sm:py-10 lg:grid-cols-[1fr_1.05fr] lg:gap-10 lg:py-12">
-      <BrandPanel />
+      <BrandPanel typingPassword={typingPassword} />
 
-      <div className="flex flex-col justify-center motion-safe:animate-fade-up lg:py-6">
+      <div
+        className="flex flex-col justify-center motion-safe:animate-fade-up lg:py-6"
+        onFocusCapture={watchFocus}
+        onBlurCapture={watchFocus}
+      >
         <div className="mx-auto w-full max-w-lg rounded-3xl bg-surface p-6 shadow-soft sm:p-8">
           <h1 className="font-display text-3xl tracking-tight text-forest sm:text-4xl">{title}</h1>
           {subtitle && <p className="mt-2 text-sm leading-6 text-forest/65">{subtitle}</p>}
@@ -40,7 +54,7 @@ export function AuthCard({
   );
 }
 
-function BrandPanel() {
+function BrandPanel({ typingPassword }: { typingPassword: boolean }) {
   return (
     <aside
       aria-hidden="true"
@@ -55,8 +69,8 @@ function BrandPanel() {
       <div className="absolute -top-16 -right-16 -z-10 size-64 rounded-full bg-[#e8894f]/30 blur-3xl motion-safe:animate-blob" />
 
       {/* Phones: a short banner. */}
-      <div className="flex items-center gap-4 p-5 lg:hidden">
-        <LogoMark tone="light" className="size-12 shrink-0" />
+      <div className="flex items-center gap-4 p-4 lg:hidden">
+        <Mascot className="size-16 shrink-0" eyesClosed={typingPassword} />
         <p className="font-display text-xl leading-snug">
           Good food deserves <em className="text-[#e8894f]">another plate.</em>
         </p>
@@ -64,7 +78,10 @@ function BrandPanel() {
 
       {/* Larger screens: the full panel. */}
       <div className="hidden h-full min-h-[36rem] flex-col justify-between gap-10 p-10 lg:flex">
-        <LogoMark tone="light" className="size-14" />
+        <div className="flex items-start justify-between">
+          <LogoMark tone="light" className="size-14" />
+          <Mascot className="size-36 motion-safe:animate-float-slow" eyesClosed={typingPassword} />
+        </div>
 
         <div>
           <p className="font-display text-4xl leading-tight tracking-tight xl:text-5xl">
