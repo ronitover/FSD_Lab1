@@ -1,3 +1,4 @@
+import { Building2, KeyRound, UserRound, type LucideIcon } from 'lucide-react';
 import { useState, type FormEvent, type ReactNode } from 'react';
 import {
   newPasswordSchema,
@@ -7,6 +8,7 @@ import {
   type ProfileUpdateInput,
 } from '@replate/shared';
 import { useMe } from '../../auth/context.ts';
+import { Avatar } from '../../components/ui/Avatar.tsx';
 import { Button } from '../../components/ui/Button.tsx';
 import { Alert } from '../../components/ui/Feedback.tsx';
 import { TextField } from '../../components/ui/FormField.tsx';
@@ -28,14 +30,20 @@ export function AccountPage() {
   return (
     <div className="mx-auto max-w-3xl px-4 py-10 sm:px-6">
       <title>Your profile · RePlate</title>
-      <p className="text-xs font-bold tracking-[0.22em] text-moss uppercase">
-        {ROLE_LABELS[me.role]}
-      </p>
-      <h1 className="mt-2 font-display text-4xl tracking-tight text-forest">Your profile</h1>
-      <p className="mt-2 text-sm text-forest/65">
-        Signed in as <strong className="text-forest">{me.email}</strong>
-      </p>
-      <div className="mt-8 space-y-6">
+      <h1 className="font-display text-4xl tracking-tight text-forest">Your profile</h1>
+      <div className="mt-6 flex items-center gap-4 rounded-3xl bg-surface p-5 shadow-soft motion-safe:animate-fade-up sm:p-6">
+        <Avatar name={me.displayName} size="lg" />
+        <div className="min-w-0">
+          <p className="font-display text-2xl break-words text-forest">{me.displayName}</p>
+          <p className="truncate text-sm text-forest/65">{me.email}</p>
+          <div className="mt-2 flex flex-wrap items-center gap-2">
+            <span className="rounded-full bg-forest/10 px-2.5 py-1 text-xs font-bold text-forest">
+              {ROLE_LABELS[me.role]}
+            </span>
+          </div>
+        </div>
+      </div>
+      <div className="stagger mt-6 space-y-6">
         {/* Keyed by the saved profile, so the form restarts from fresh values after each save. */}
         <ProfileForm
           key={JSON.stringify([me.displayName, me.phone, me.address, me.lat, me.lng])}
@@ -273,10 +281,25 @@ function PasswordForm() {
   );
 }
 
+const SECTION_ICONS: Record<string, LucideIcon> = {
+  Details: UserRound,
+  Organisation: Building2,
+  Password: KeyRound,
+};
+
 function Section({ title, children }: { title: string; children: ReactNode }) {
+  const Icon = SECTION_ICONS[title] ?? UserRound;
   return (
     <section className="rounded-3xl bg-surface p-5 shadow-soft sm:p-7">
-      <h2 className="mb-5 font-display text-xl text-forest">{title}</h2>
+      <h2 className="mb-5 flex items-center gap-3 font-display text-xl text-forest">
+        <span
+          className="flex size-9 items-center justify-center rounded-xl bg-moss/15 text-moss"
+          aria-hidden="true"
+        >
+          <Icon className="size-4.5" />
+        </span>
+        {title}
+      </h2>
       {children}
     </section>
   );
