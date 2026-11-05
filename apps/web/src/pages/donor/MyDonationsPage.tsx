@@ -1,5 +1,9 @@
 import { Link, useSearchParams } from 'react-router';
 import { DONATION_STATUSES, type DonationStatus } from '@replate/shared';
+import {
+  EmptyPlateIllustration,
+  NoMatchesIllustration,
+} from '../../components/illustrations/EmptyStates.tsx';
 import { EmptyState, FullPageError, Spinner } from '../../components/ui/Feedback.tsx';
 import { SearchBar } from '../../components/ui/SearchBar.tsx';
 import { SelectField } from '../../components/ui/SelectField.tsx';
@@ -77,6 +81,7 @@ export function MyDonationsPage() {
         ) : list.length === 0 ? (
           filtered ? (
             <EmptyState
+              illustration={<NoMatchesIllustration />}
               title="No matching donations"
               action={
                 <button
@@ -92,6 +97,7 @@ export function MyDonationsPage() {
             </EmptyState>
           ) : (
             <EmptyState
+              illustration={<EmptyPlateIllustration />}
               title="No donations yet"
               action={
                 <Link to="/donor/donations/new" className={buttonClasses()}>

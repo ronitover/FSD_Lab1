@@ -1,6 +1,7 @@
 import { CircleCheckBig, Hourglass, Truck, type LucideIcon } from 'lucide-react';
 import { Link } from 'react-router';
 import type { DonationStatus } from '@replate/shared';
+import { EmptyPlateIllustration } from '../../components/illustrations/EmptyStates.tsx';
 import { useMe } from '../../auth/context.ts';
 import { EmptyState, FullPageError, Spinner } from '../../components/ui/Feedback.tsx';
 import { buttonClasses } from '../../components/ui/styles.ts';
@@ -85,6 +86,7 @@ export function DonorDashboardPage() {
           {all.length === 0 ? (
             <div className="mt-10">
               <EmptyState
+                illustration={<EmptyPlateIllustration />}
                 title="No donations yet"
                 action={
                   <Link to="/donor/donations/new" className={buttonClasses()}>

@@ -9,6 +9,10 @@ import {
 import { useMe } from '../../auth/context.ts';
 import { NearbyMap } from '../../components/map/NearbyMap.tsx';
 import { Button } from '../../components/ui/Button.tsx';
+import {
+  NoMatchesIllustration,
+  NothingNearbyIllustration,
+} from '../../components/illustrations/EmptyStates.tsx';
 import { EmptyState, FullPageError, Spinner } from '../../components/ui/Feedback.tsx';
 import { SearchBar } from '../../components/ui/SearchBar.tsx';
 import { SelectField } from '../../components/ui/SelectField.tsx';
@@ -261,6 +265,7 @@ export function FindFoodPage() {
             />
           ) : list.length === 0 ? (
             <EmptyState
+              illustration={filtered ? <NoMatchesIllustration /> : <NothingNearbyIllustration />}
               title={filtered ? 'No matching donations' : 'Nothing nearby right now'}
               action={
                 filtered ? (

@@ -65,18 +65,25 @@ export function EmptyState({
   children,
   action,
   icon: Icon = UtensilsCrossed,
+  illustration,
 }: {
   title: string;
   children?: ReactNode;
   action?: ReactNode;
   icon?: LucideIcon;
+  /** A drawing to show instead of the icon. */
+  illustration?: ReactNode;
 }) {
   return (
-    <div className="rounded-3xl border border-dashed border-forest/20 bg-surface/40 px-6 py-12 text-center motion-safe:animate-fade-up">
-      <span className="relative mx-auto mb-4 flex size-16 items-center justify-center">
-        <span className="absolute inset-0 rounded-full bg-orange/10 motion-safe:animate-float-slow" />
-        <Icon className="relative size-7 text-orange" strokeWidth={1.75} aria-hidden="true" />
-      </span>
+    <div className="rounded-3xl border border-dashed border-forest/20 bg-surface/40 px-6 py-10 text-center motion-safe:animate-fade-up">
+      {illustration ? (
+        <div className="mx-auto mb-4 flex justify-center">{illustration}</div>
+      ) : (
+        <span className="relative mx-auto mb-4 flex size-16 items-center justify-center">
+          <span className="absolute inset-0 rounded-full bg-orange/10 motion-safe:animate-float-slow" />
+          <Icon className="relative size-7 text-orange" strokeWidth={1.75} aria-hidden="true" />
+        </span>
+      )}
       <h2 className="font-display text-xl text-forest">{title}</h2>
       {children && <p className="mx-auto mt-2 max-w-sm text-sm text-forest/65">{children}</p>}
       {action && <div className="mt-5">{action}</div>}

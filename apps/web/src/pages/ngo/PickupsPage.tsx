@@ -10,6 +10,7 @@ import {
 import { Link, useSearchParams } from 'react-router';
 import type { Donation } from '@replate/shared';
 import { Button } from '../../components/ui/Button.tsx';
+import { TiffinIllustration } from '../../components/illustrations/EmptyStates.tsx';
 import { EmptyState, FullPageError, Spinner } from '../../components/ui/Feedback.tsx';
 import { CategoryTile, FoodTypeLabel } from '../../components/ui/FoodVisuals.tsx';
 import { StatusBadge } from '../../components/ui/StatusBadge.tsx';
@@ -121,7 +122,7 @@ export function PickupsPage() {
           />
         ) : list.length === 0 ? (
           <EmptyState
-            icon={tab === 'collected' ? PackageCheck : Truck}
+            illustration={<TiffinIllustration />}
             title={tab === 'claimed' ? 'Nothing to collect right now' : 'No pickups yet'}
             action={
               <Link to="/ngo" className={buttonClasses()}>
