@@ -1,12 +1,13 @@
+import { ArrowRight, LockKeyhole, Mail } from 'lucide-react';
 import { useState, type FormEvent } from 'react';
 import { Link } from 'react-router';
 import { signInSchema } from '@replate/shared';
 import { AuthCard } from '../../components/layout/AuthCard.tsx';
+import { AuthField } from '../../components/ui/AuthField.tsx';
 import { Button } from '../../components/ui/Button.tsx';
 import { Alert } from '../../components/ui/Feedback.tsx';
-import { TextField } from '../../components/ui/FormField.tsx';
 import { authErrorMessage } from '../../lib/authErrors.ts';
-import { fieldErrors, type FieldErrors } from '../../lib/forms.ts';
+import { fieldErrors, looksLikeEmail, type FieldErrors } from '../../lib/forms.ts';
 import { auth } from '../../lib/supabase.ts';
 
 interface SignInValues {
@@ -45,6 +46,7 @@ export function SignInPage() {
     <AuthCard
       title="Welcome back"
       subtitle="Sign in to share food or find donations near you."
+      error={formError ?? Object.values(errors).find(Boolean)}
       footer={
         <>
           New to RePlate?{' '}
@@ -58,19 +60,22 @@ export function SignInPage() {
       }
     >
       <title>Sign in · RePlate</title>
-      <form onSubmit={handleSubmit} noValidate className="space-y-5">
+      <form onSubmit={handleSubmit} noValidate className="space-y-4">
         {formError && <Alert>{formError}</Alert>}
-        <TextField
+        <AuthField
           label="Email"
+          icon={Mail}
           type="email"
           autoComplete="email"
           value={values.email}
           onChange={(value) => update('email', value)}
           error={errors.email}
+          valid={looksLikeEmail(values.email)}
           required
         />
-        <TextField
+        <AuthField
           label="Password"
+          icon={LockKeyhole}
           type="password"
           autoComplete="current-password"
           value={values.password}
@@ -78,17 +83,21 @@ export function SignInPage() {
           error={errors.password}
           required
         />
-        <div className="flex items-center justify-between gap-4">
+        <div className="flex justify-end">
           <Link
             to="/forgot-password"
-            className="text-sm inline-block py-1 font-semibold text-moss underline-offset-4 hover:underline"
+            className="inline-block py-1 text-sm font-semibold text-moss underline-offset-4 hover:underline"
           >
             Forgot password?
           </Link>
-          <Button type="submit" loading={submitting}>
-            Sign in
-          </Button>
         </div>
+        <Button type="submit" size="lg" loading={submitting} className="group w-full">
+          Sign in
+          <ArrowRight
+            className="size-4 transition-transform duration-200 group-hover:translate-x-1"
+            aria-hidden="true"
+          />
+        </Button>
       </form>
     </AuthCard>
   );

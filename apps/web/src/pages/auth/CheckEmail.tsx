@@ -1,4 +1,6 @@
 import { useState } from 'react';
+import { MailCheck } from 'lucide-react';
+import * as m from 'motion/react-m';
 import { Link } from 'react-router';
 import { AuthCard } from '../../components/layout/AuthCard.tsx';
 import { Button } from '../../components/ui/Button.tsx';
@@ -46,6 +48,16 @@ export function CheckEmail({ email }: { email: string }) {
     >
       <title>Check your email · RePlate</title>
       <div className="space-y-4">
+        {/* The envelope drops in and wiggles, so it's clear something was sent. */}
+        <m.div
+          initial={{ y: -30, opacity: 0, rotate: -12 }}
+          animate={{ y: 0, opacity: 1, rotate: [0, -8, 8, -4, 0] }}
+          transition={{ type: 'spring', stiffness: 220, damping: 14 }}
+          className="flex size-16 items-center justify-center rounded-2xl bg-moss/15 text-moss"
+          aria-hidden="true"
+        >
+          <MailCheck className="size-8" />
+        </m.div>
         {error && <Alert>{error}</Alert>}
         {state === 'sent' && (
           <Alert tone="success">Sent again. It can take a minute to arrive.</Alert>

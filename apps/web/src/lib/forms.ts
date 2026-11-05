@@ -14,3 +14,8 @@ export function fieldErrors<T>(error: ValidationError): FieldErrors<T> {
   }
   return errors;
 }
+
+/** A light check for showing a "looks right" tick while typing. The real check is the schema's. */
+export function looksLikeEmail(value: string): boolean {
+  return /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(value.trim());
+}

@@ -1,12 +1,13 @@
 import { useState, type FormEvent } from 'react';
+import { ArrowRight, Mail } from 'lucide-react';
 import { Link } from 'react-router';
 import { passwordResetRequestSchema } from '@replate/shared';
 import { AuthCard } from '../../components/layout/AuthCard.tsx';
 import { Button } from '../../components/ui/Button.tsx';
 import { Alert } from '../../components/ui/Feedback.tsx';
-import { TextField } from '../../components/ui/FormField.tsx';
+import { AuthField } from '../../components/ui/AuthField.tsx';
 import { authErrorMessage } from '../../lib/authErrors.ts';
-import { fieldErrors } from '../../lib/forms.ts';
+import { fieldErrors, looksLikeEmail } from '../../lib/forms.ts';
 import { auth } from '../../lib/supabase.ts';
 
 export function ForgotPasswordPage() {
@@ -60,13 +61,16 @@ export function ForgotPasswordPage() {
     <AuthCard
       title="Reset your password"
       subtitle="Enter your account's email and we'll send you a link to choose a new password."
+      error={formError ?? emailError}
       footer={backToSignIn}
     >
       <title>Reset your password · RePlate</title>
       <form onSubmit={handleSubmit} noValidate className="space-y-5">
         {formError && <Alert>{formError}</Alert>}
-        <TextField
+        <AuthField
           label="Email"
+          icon={Mail}
+          valid={looksLikeEmail(email)}
           type="email"
           autoComplete="email"
           value={email}
@@ -77,8 +81,12 @@ export function ForgotPasswordPage() {
           error={emailError}
           required
         />
-        <Button type="submit" loading={submitting} className="w-full">
+        <Button type="submit" size="lg" loading={submitting} className="group w-full">
           Send reset link
+          <ArrowRight
+            className="size-4 transition-transform duration-200 group-hover:translate-x-1"
+            aria-hidden="true"
+          />
         </Button>
       </form>
     </AuthCard>

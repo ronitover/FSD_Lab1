@@ -1,14 +1,26 @@
+import {
+  ArrowRight,
+  Building2,
+  ChefHat,
+  FileBadge,
+  HandHeart,
+  LockKeyhole,
+  Mail,
+  Phone,
+  UserRound,
+} from 'lucide-react';
+import * as m from 'motion/react-m';
+import { AnimatePresence } from 'motion/react';
 import { useState, type FormEvent } from 'react';
-import { HandHeart, Utensils } from 'lucide-react';
 import { Link, useSearchParams } from 'react-router';
 import { PASSWORD_MIN_LENGTH, signUpSchema, type SignUpRole } from '@replate/shared';
 import { AuthCard } from '../../components/layout/AuthCard.tsx';
+import { AuthField } from '../../components/ui/AuthField.tsx';
 import { Button } from '../../components/ui/Button.tsx';
 import { Alert } from '../../components/ui/Feedback.tsx';
-import { TextField } from '../../components/ui/FormField.tsx';
 import { RadioGroup, type RadioOption } from '../../components/ui/RadioGroup.tsx';
 import { authErrorMessage } from '../../lib/authErrors.ts';
-import { fieldErrors, type FieldErrors } from '../../lib/forms.ts';
+import { fieldErrors, looksLikeEmail, type FieldErrors } from '../../lib/forms.ts';
 import { auth } from '../../lib/supabase.ts';
 import { CheckEmail } from './CheckEmail.tsx';
 
@@ -26,15 +38,21 @@ const ROLE_OPTIONS: RadioOption<SignUpRole>[] = [
     value: 'donor',
     label: 'I have food to donate',
     description: 'Restaurants, stores, caterers, events and households.',
-    icon: <Utensils className="size-5" />,
+    icon: <ChefHat />,
   },
   {
     value: 'ngo',
     label: 'I represent an NGO',
     description: 'Find and collect donations near you once we verify your organisation.',
-    icon: <HandHeart className="size-5" />,
+    icon: <HandHeart />,
   },
 ];
+
+const TITLES: Record<SignUpRole | '', string> = {
+  '': 'Join RePlate',
+  donor: 'Join as a donor',
+  ngo: 'Register your NGO',
+};
 
 const EMPTY: SignUpValues = {
   role: '',
@@ -107,10 +125,17 @@ export function SignUpPage() {
 
   if (sentTo) return <CheckEmail email={sentTo} />;
 
+  const isNgo = values.role === 'ngo';
+
   return (
     <AuthCard
-      title="Join RePlate"
-      subtitle="Good food deserves another plate. It takes a minute to get started."
+      title={TITLES[values.role]}
+      subtitle={
+        values.role
+          ? 'A few details and you are in. It takes about a minute.'
+          : 'Good food deserves another plate. First, how will you use RePlate?'
+      }
+      error={formError ?? Object.values(errors).find(Boolean)}
       footer={
         <>
           Already have an account?{' '}
@@ -124,7 +149,7 @@ export function SignUpPage() {
       }
     >
       <title>Create an account · RePlate</title>
-      <form onSubmit={handleSubmit} noValidate className="space-y-5">
+      <form onSubmit={handleSubmit} noValidate className="space-y-4">
         {formError && <Alert>{formError}</Alert>}
         <RadioGroup
           legend="How will you use RePlate?"
@@ -133,57 +158,98 @@ export function SignUpPage() {
           value={values.role}
           onChange={(value) => update('role', value)}
           error={errors.role}
+          className="[&_legend]:sr-only"
         />
-        <TextField
-          label={values.role === 'ngo' ? 'Organisation name' : 'Your name or business name'}
-          autoComplete="organization"
-          value={values.displayName}
-          onChange={(value) => update('displayName', value)}
-          error={errors.displayName}
-          required
-        />
-        {values.role === 'ngo' && (
-          <TextField
-            label="Registration number"
-            optional
-            hint="Helps us verify your organisation faster, e.g. your NGO Darpan ID."
-            value={values.registrationNumber}
-            onChange={(value) => update('registrationNumber', value)}
-            error={errors.registrationNumber}
-          />
-        )}
-        <TextField
-          label="Email"
-          type="email"
-          autoComplete="email"
-          value={values.email}
-          onChange={(value) => update('email', value)}
-          error={errors.email}
-          required
-        />
-        <TextField
-          label="Phone"
-          type="tel"
-          autoComplete="tel"
-          optional
-          hint="Shared only with the other side of a pickup, once a donation is claimed."
-          value={values.phone}
-          onChange={(value) => update('phone', value)}
-          error={errors.phone}
-        />
-        <TextField
-          label="Password"
-          type="password"
-          autoComplete="new-password"
-          hint={`At least ${PASSWORD_MIN_LENGTH} characters.`}
-          value={values.password}
-          onChange={(value) => update('password', value)}
-          error={errors.password}
-          required
-        />
-        <Button type="submit" size="lg" loading={submitting} className="w-full">
-          Create account
-        </Button>
+
+        {/* The rest of the form slides in once a role is chosen. */}
+        <AnimatePresence initial={false}>
+          {values.role && (
+            <m.div
+              key="details"
+              initial={{ opacity: 0, height: 0 }}
+              animate={{ opacity: 1, height: 'auto' }}
+              exit={{ opacity: 0, height: 0 }}
+              transition={{ type: 'spring', stiffness: 200, damping: 28 }}
+              className="-mx-1 overflow-hidden px-1"
+            >
+              <div className="space-y-4 pt-2">
+                <AuthField
+                  label={isNgo ? 'Organisation name' : 'Your name or business name'}
+                  icon={isNgo ? Building2 : UserRound}
+                  autoComplete="organization"
+                  value={values.displayName}
+                  onChange={(value) => update('displayName', value)}
+                  error={errors.displayName}
+                  valid={values.displayName.trim().length >= 2}
+                  required
+                />
+                <AnimatePresence initial={false}>
+                  {isNgo && (
+                    <m.div
+                      initial={{ opacity: 0, height: 0 }}
+                      animate={{ opacity: 1, height: 'auto' }}
+                      exit={{ opacity: 0, height: 0 }}
+                      className="-mx-1 overflow-hidden px-1"
+                    >
+                      <AuthField
+                        label="Registration number"
+                        icon={FileBadge}
+                        optional
+                        hint="Helps us verify your organisation faster, e.g. your NGO Darpan ID."
+                        value={values.registrationNumber}
+                        onChange={(value) => update('registrationNumber', value)}
+                        error={errors.registrationNumber}
+                      />
+                    </m.div>
+                  )}
+                </AnimatePresence>
+                <AuthField
+                  label="Email"
+                  icon={Mail}
+                  type="email"
+                  autoComplete="email"
+                  value={values.email}
+                  onChange={(value) => update('email', value)}
+                  error={errors.email}
+                  valid={looksLikeEmail(values.email)}
+                  required
+                />
+                <AuthField
+                  label="Phone"
+                  icon={Phone}
+                  type="tel"
+                  inputMode="tel"
+                  autoComplete="tel"
+                  optional
+                  hint="Shared only with the other side of a pickup, once a donation is claimed."
+                  value={values.phone}
+                  onChange={(value) => update('phone', value)}
+                  error={errors.phone}
+                  valid={values.phone.replace(/\D/g, '').length >= 10}
+                />
+                <AuthField
+                  label="Password"
+                  icon={LockKeyhole}
+                  type="password"
+                  autoComplete="new-password"
+                  hint={`At least ${PASSWORD_MIN_LENGTH} characters.`}
+                  value={values.password}
+                  onChange={(value) => update('password', value)}
+                  error={errors.password}
+                  showStrength
+                  required
+                />
+                <Button type="submit" size="lg" loading={submitting} className="group w-full">
+                  {isNgo ? 'Register NGO' : 'Create account'}
+                  <ArrowRight
+                    className="size-4 transition-transform duration-200 group-hover:translate-x-1"
+                    aria-hidden="true"
+                  />
+                </Button>
+              </div>
+            </m.div>
+          )}
+        </AnimatePresence>
       </form>
     </AuthCard>
   );
