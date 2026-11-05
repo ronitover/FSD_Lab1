@@ -13,6 +13,7 @@ import { useState, type ReactNode } from 'react';
 import { useSearchParams } from 'react-router';
 import { NGO_VERIFICATIONS, type AdminNgo, type NgoVerification } from '@replate/shared';
 import { Avatar } from '../../components/ui/Avatar.tsx';
+import { TabHighlight } from '../../components/motion/TabHighlight.tsx';
 import { Button } from '../../components/ui/Button.tsx';
 import { EmptyState, FullPageError, Spinner } from '../../components/ui/Feedback.tsx';
 import { ConfirmDialog } from '../../components/ui/Modal.tsx';
@@ -82,13 +83,14 @@ export function AdminNgosPage() {
             onClick={() =>
               setParams(item.value === 'pending' ? {} : { show: item.value }, { replace: true })
             }
-            className={`rounded-full px-4 py-2 text-sm font-semibold transition duration-200 active:scale-[0.97] ${
+            className={`relative rounded-full px-4 py-2 text-sm font-semibold transition-colors duration-200 active:scale-[0.97] ${
               tab === item.value
-                ? 'bg-forest text-cream'
+                ? 'text-cream'
                 : 'border border-forest/20 text-forest hover:border-forest/50'
             }`}
           >
-            {item.label}
+            {tab === item.value && <TabHighlight group="admin-tabs" />}
+            <span className="relative">{item.label}</span>
           </button>
         ))}
       </div>

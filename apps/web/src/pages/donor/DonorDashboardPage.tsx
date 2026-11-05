@@ -3,6 +3,7 @@ import { Link } from 'react-router';
 import type { DonationStatus } from '@replate/shared';
 import { EmptyPlateIllustration } from '../../components/illustrations/EmptyStates.tsx';
 import { useMe } from '../../auth/context.ts';
+import { AnimatedNumber } from '../../components/motion/AnimatedNumber.tsx';
 import { EmptyState, FullPageError, Spinner } from '../../components/ui/Feedback.tsx';
 import { buttonClasses } from '../../components/ui/styles.ts';
 import { DonationCard } from '../../features/donations/DonationCard.tsx';
@@ -77,7 +78,7 @@ export function DonorDashboardPage() {
                   {stat.label}
                 </dt>
                 <dd className="font-display text-3xl text-forest sm:text-4xl">
-                  {count(stat.status)}
+                  <AnimatedNumber value={count(stat.status)} />
                 </dd>
               </Link>
             ))}

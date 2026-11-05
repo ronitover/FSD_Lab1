@@ -1,4 +1,6 @@
 import { ArrowLeft, ArrowRight, Check, Clock, MapPin, PencilLine } from 'lucide-react';
+import * as m from 'motion/react-m';
+import { AnimatePresence, type Variants } from 'motion/react';
 import {
   useRef,
   useState,
@@ -30,6 +32,13 @@ import { valuesToInput, type DonationFormValues } from './formValues.ts';
 import { PickupLocationField } from './PickupLocationField.tsx';
 
 const UNIT_OPTIONS = optionsFrom(UNIT_LABELS);
+
+/** Steps slide in from the side you're heading towards, and out the other way. */
+const stepSlide: Variants = {
+  enter: (direction: number) => ({ opacity: 0, x: direction * 48 }),
+  center: { opacity: 1, x: 0, transition: { type: 'spring', stiffness: 260, damping: 28 } },
+  exit: (direction: number) => ({ opacity: 0, x: direction * -48, transition: { duration: 0.15 } }),
+};
 
 type Field = keyof DonationFormValues;
 
@@ -78,6 +87,8 @@ export function DonationForm({
   const [formError, setFormError] = useState<string | null>(null);
   const [submitting, setSubmitting] = useState(false);
   const [step, setStep] = useState(0);
+  // 1 going forward, -1 going back: the next step slides in from that side.
+  const [direction, setDirection] = useState(1);
   const [reached, setReached] = useState(mode === 'edit' ? STEPS.length - 1 : 0);
   const topRef = useRef<HTMLDivElement>(null);
 
@@ -97,6 +108,7 @@ export function DonationForm({
   }
 
   function goTo(next: number) {
+    setDirection(next >= step ? 1 : -1);
     setStep(next);
     setReached((current) => Math.max(current, next));
     setFormError(null);
@@ -153,128 +165,135 @@ export function DonationForm({
       <div ref={topRef} className="scroll-mt-24" />
       <StepIndicator step={step} reached={reached} onSelect={goTo} />
 
-      <section
-        key={step}
-        aria-labelledby="step-heading"
-        className="mt-6 space-y-7 rounded-3xl bg-surface p-5 shadow-soft motion-safe:animate-fade-up sm:p-8"
-      >
-        <h2 id="step-heading" className="font-display text-2xl text-forest sm:text-3xl">
-          {current.heading}
-        </h2>
-        {formError && <Alert>{formError}</Alert>}
+      <AnimatePresence mode="wait" initial={false} custom={direction}>
+        <m.section
+          key={step}
+          custom={direction}
+          variants={stepSlide}
+          initial="enter"
+          animate="center"
+          exit="exit"
+          aria-labelledby="step-heading"
+          className="mt-6 space-y-7 rounded-3xl bg-surface p-5 shadow-soft sm:p-8"
+        >
+          <h2 id="step-heading" className="font-display text-2xl text-forest sm:text-3xl">
+            {current.heading}
+          </h2>
+          {formError && <Alert>{formError}</Alert>}
 
-        {step === 0 && (
-          <>
-            <TextField
-              label="What is it?"
-              placeholder="e.g. Veg biryani from today's lunch buffet"
-              value={values.title}
-              onChange={(value) => update('title', value)}
-              error={errors.title}
-              maxLength={120}
-              required
-              autoFocus={mode === 'create'}
-            />
-            <CategoryPicker
-              value={values.category}
-              onChange={(value) => update('category', value)}
-              error={errors.category}
-            />
-            <FoodTypePicker
-              value={values.dietaryType}
-              onChange={(value) => update('dietaryType', value)}
-              error={errors.dietaryType}
-            />
-            <QuantityStepper
-              value={values.quantity}
-              onChange={(value) => update('quantity', value)}
-              error={errors.quantity}
-              unitSelect={
-                <SelectField
-                  label="Unit"
-                  className="[&_label]:sr-only"
-                  options={UNIT_OPTIONS}
-                  value={values.quantityUnit}
-                  onChange={(value) => update('quantityUnit', value || 'servings')}
-                />
-              }
-            />
-          </>
-        )}
-
-        {step === 1 && (
-          <>
-            <CollectByPicker
-              value={values.expiresAt}
-              onChange={(value) => update('expiresAt', value)}
-              min={values.pickupFrom || localInputFromNow()}
-              max={localInputFromNow(MAX_EXPIRY_DAYS * 24)}
-              error={errors.expiresAt}
-            />
-            <ReadyFrom
-              value={values.pickupFrom}
-              onChange={(value) => update('pickupFrom', value)}
-              error={errors.pickupFrom}
-            />
-            <AllergenChips
-              common={COMMON_ALLERGENS}
-              selected={values.allergens}
-              onToggle={toggleAllergen}
-              error={errors.allergens}
-            />
-            <KeepColdToggle
-              checked={values.needsRefrigeration}
-              onChange={(on) => update('needsRefrigeration', on)}
-            />
-            {/* Only cooked food needs a cooking time, so other categories skip the question. */}
-            {(values.category === 'cooked_meal' || values.preparedAt) && (
+          {step === 0 && (
+            <>
               <TextField
-                label="When was it cooked?"
-                type="datetime-local"
-                optional
-                hint="Helps the NGO judge how fresh it is."
-                value={values.preparedAt}
-                onChange={(value) => update('preparedAt', value)}
-                error={errors.preparedAt}
-                max={localInputFromNow()}
-                className="sm:max-w-xs"
+                label="What is it?"
+                placeholder="e.g. Veg biryani from today's lunch buffet"
+                value={values.title}
+                onChange={(value) => update('title', value)}
+                error={errors.title}
+                maxLength={120}
+                required
+                autoFocus={mode === 'create'}
               />
-            )}
-          </>
-        )}
+              <CategoryPicker
+                value={values.category}
+                onChange={(value) => update('category', value)}
+                error={errors.category}
+              />
+              <FoodTypePicker
+                value={values.dietaryType}
+                onChange={(value) => update('dietaryType', value)}
+                error={errors.dietaryType}
+              />
+              <QuantityStepper
+                value={values.quantity}
+                onChange={(value) => update('quantity', value)}
+                error={errors.quantity}
+                unitSelect={
+                  <SelectField
+                    label="Unit"
+                    className="[&_label]:sr-only"
+                    options={UNIT_OPTIONS}
+                    value={values.quantityUnit}
+                    onChange={(value) => update('quantityUnit', value || 'servings')}
+                  />
+                }
+              />
+            </>
+          )}
 
-        {step === 2 && (
-          <>
-            <PickupStep
-              values={values}
-              errors={errors}
-              setValues={setValues}
-              setErrors={setErrors}
-            />
-            <TextAreaField
-              label="Pickup instructions"
-              optional
-              placeholder="e.g. Use the back entrance, ask for Ravi at the counter."
-              value={values.pickupNotes}
-              onChange={(value) => update('pickupNotes', value)}
-              error={errors.pickupNotes}
-              maxLength={500}
-              rows={2}
-            />
-            <TextAreaField
-              label="Anything else NGOs should know?"
-              optional
-              placeholder="Ingredients, how it was stored, how it's packed…"
-              value={values.description}
-              onChange={(value) => update('description', value)}
-              error={errors.description}
-              maxLength={1000}
-              rows={2}
-            />
-            <Review values={values} onEdit={goTo} />
-          </>
-        )}
-      </section>
+          {step === 1 && (
+            <>
+              <CollectByPicker
+                value={values.expiresAt}
+                onChange={(value) => update('expiresAt', value)}
+                min={values.pickupFrom || localInputFromNow()}
+                max={localInputFromNow(MAX_EXPIRY_DAYS * 24)}
+                error={errors.expiresAt}
+              />
+              <ReadyFrom
+                value={values.pickupFrom}
+                onChange={(value) => update('pickupFrom', value)}
+                error={errors.pickupFrom}
+              />
+              <AllergenChips
+                common={COMMON_ALLERGENS}
+                selected={values.allergens}
+                onToggle={toggleAllergen}
+                error={errors.allergens}
+              />
+              <KeepColdToggle
+                checked={values.needsRefrigeration}
+                onChange={(on) => update('needsRefrigeration', on)}
+              />
+              {/* Only cooked food needs a cooking time, so other categories skip the question. */}
+              {(values.category === 'cooked_meal' || values.preparedAt) && (
+                <TextField
+                  label="When was it cooked?"
+                  type="datetime-local"
+                  optional
+                  hint="Helps the NGO judge how fresh it is."
+                  value={values.preparedAt}
+                  onChange={(value) => update('preparedAt', value)}
+                  error={errors.preparedAt}
+                  max={localInputFromNow()}
+                  className="sm:max-w-xs"
+                />
+              )}
+            </>
+          )}
+
+          {step === 2 && (
+            <>
+              <PickupStep
+                values={values}
+                errors={errors}
+                setValues={setValues}
+                setErrors={setErrors}
+              />
+              <TextAreaField
+                label="Pickup instructions"
+                optional
+                placeholder="e.g. Use the back entrance, ask for Ravi at the counter."
+                value={values.pickupNotes}
+                onChange={(value) => update('pickupNotes', value)}
+                error={errors.pickupNotes}
+                maxLength={500}
+                rows={2}
+              />
+              <TextAreaField
+                label="Anything else NGOs should know?"
+                optional
+                placeholder="Ingredients, how it was stored, how it's packed…"
+                value={values.description}
+                onChange={(value) => update('description', value)}
+                error={errors.description}
+                maxLength={1000}
+                rows={2}
+              />
+              <Review values={values} onEdit={goTo} />
+            </>
+          )}
+        </m.section>
+      </AnimatePresence>
 
       {/* Sticks to the bottom on phones, so Next is always in reach. */}
       <div className="sticky bottom-0 z-10 -mx-4 mt-6 flex items-center justify-between gap-3 border-t border-forest/10 bg-cream/90 px-4 py-4 backdrop-blur sm:static sm:mx-0 sm:border-0 sm:bg-transparent sm:px-0 sm:backdrop-blur-none">

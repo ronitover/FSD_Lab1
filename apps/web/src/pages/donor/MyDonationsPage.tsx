@@ -1,3 +1,5 @@
+import { AnimatePresence } from 'motion/react';
+import { ListItem } from '../../components/motion/ListItem.tsx';
 import { Link, useSearchParams } from 'react-router';
 import { DONATION_STATUSES, type DonationStatus } from '@replate/shared';
 import {
@@ -115,11 +117,16 @@ export function MyDonationsPage() {
               {filtered && ' found'}
             </p>
             <div
-              className={`stagger space-y-3 transition-opacity ${donations.isPlaceholderData ? 'opacity-60' : ''}`}
+              className={`space-y-3 transition-opacity ${donations.isPlaceholderData ? 'opacity-60' : ''}`}
             >
-              {list.map((donation) => (
-                <DonationCard key={donation.id} donation={donation} />
-              ))}
+              {/* Cards fade and slide into place as searches and filters change the list. */}
+              <AnimatePresence mode="popLayout">
+                {list.map((donation, index) => (
+                  <ListItem key={donation.id} index={index}>
+                    <DonationCard donation={donation} />
+                  </ListItem>
+                ))}
+              </AnimatePresence>
             </div>
           </>
         )}

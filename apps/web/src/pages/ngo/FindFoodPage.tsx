@@ -1,4 +1,6 @@
 import { useState } from 'react';
+import { AnimatePresence } from 'motion/react';
+import { ListItem } from '../../components/motion/ListItem.tsx';
 import { Link, useNavigate, useSearchParams } from 'react-router';
 import {
   DIETARY_TYPES,
@@ -8,6 +10,7 @@ import {
 } from '@replate/shared';
 import { useMe } from '../../auth/context.ts';
 import { NearbyMap } from '../../components/map/NearbyMap.tsx';
+import { TabHighlight } from '../../components/motion/TabHighlight.tsx';
 import { Button } from '../../components/ui/Button.tsx';
 import {
   NoMatchesIllustration,
@@ -243,11 +246,12 @@ export function FindFoodPage() {
             type="button"
             aria-pressed={view === option}
             onClick={() => setView(option)}
-            className={`rounded-full px-4 py-1.5 text-sm font-semibold ${
-              view === option ? 'bg-forest text-cream' : 'border border-forest/20 text-forest'
+            className={`relative rounded-full px-4 py-1.5 text-sm font-semibold transition-colors ${
+              view === option ? 'text-cream' : 'border border-forest/20 text-forest'
             }`}
           >
-            {option === 'list' ? 'List' : 'Map'}
+            {view === option && <TabHighlight group="find-food-view" />}
+            <span className="relative">{option === 'list' ? 'List' : 'Map'}</span>
           </button>
         ))}
       </div>
@@ -294,19 +298,23 @@ export function FindFoodPage() {
                 {list.length} {list.length === 1 ? 'donation' : 'donations'}, nearest first
               </p>
               <div
-                className={`stagger grid grid-cols-1 gap-4 transition-opacity xl:grid-cols-2 ${nearby.isPlaceholderData ? 'opacity-60' : ''}`}
+                className={`grid grid-cols-1 gap-4 transition-opacity xl:grid-cols-2 ${nearby.isPlaceholderData ? 'opacity-60' : ''}`}
               >
-                {list.map((donation) => (
-                  <NearbyDonationCard
-                    key={donation.id}
-                    donation={donation}
-                    onClaim={() =>
-                      actions.request('claim', donation, () =>
-                        navigate(`/donations/${donation.id}`),
-                      )
-                    }
-                  />
-                ))}
+                {/* Cards fade and slide into place as filters and distance change the list. */}
+                <AnimatePresence mode="popLayout">
+                  {list.map((donation, index) => (
+                    <ListItem key={donation.id} index={index}>
+                      <NearbyDonationCard
+                        donation={donation}
+                        onClaim={() =>
+                          actions.request('claim', donation, () =>
+                            navigate(`/donations/${donation.id}`),
+                          )
+                        }
+                      />
+                    </ListItem>
+                  ))}
+                </AnimatePresence>
               </div>
             </>
           )}

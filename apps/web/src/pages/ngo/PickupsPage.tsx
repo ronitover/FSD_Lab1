@@ -9,6 +9,8 @@ import {
 } from 'lucide-react';
 import { Link, useSearchParams } from 'react-router';
 import type { Donation } from '@replate/shared';
+import { AnimatedNumber } from '../../components/motion/AnimatedNumber.tsx';
+import { TabHighlight } from '../../components/motion/TabHighlight.tsx';
 import { Button } from '../../components/ui/Button.tsx';
 import { TiffinIllustration } from '../../components/illustrations/EmptyStates.tsx';
 import { EmptyState, FullPageError, Spinner } from '../../components/ui/Feedback.tsx';
@@ -89,16 +91,17 @@ export function PickupsPage() {
               onClick={() =>
                 setParams(item.value === 'claimed' ? {} : { show: item.value }, { replace: true })
               }
-              className={`inline-flex items-center gap-2 rounded-full px-4 py-2 text-sm font-semibold transition duration-200 active:scale-[0.97] ${
+              className={`relative inline-flex items-center gap-2 rounded-full px-4 py-2 text-sm font-semibold transition-colors duration-200 active:scale-[0.97] ${
                 tab === item.value
-                  ? 'bg-forest text-cream'
+                  ? 'text-cream'
                   : 'border border-forest/20 text-forest hover:border-forest/50'
               }`}
             >
-              {item.label}
+              {tab === item.value && <TabHighlight group="pickups-tabs" />}
+              <span className="relative">{item.label}</span>
               {!pickups.isPending && (
                 <span
-                  className={`rounded-full px-1.5 text-xs ${
+                  className={`relative rounded-full px-1.5 text-xs ${
                     tab === item.value ? 'bg-cream/20' : 'bg-forest/10'
                   }`}
                 >
@@ -176,7 +179,9 @@ function Stat({
       </span>
       <div>
         <dt className="text-xs font-semibold text-forest/60">{label}</dt>
-        <dd className="font-display text-2xl leading-none text-forest">{value}</dd>
+        <dd className="font-display text-2xl leading-none text-forest">
+          <AnimatedNumber value={value} />
+        </dd>
       </div>
     </div>
   );

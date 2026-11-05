@@ -1,3 +1,4 @@
+import * as m from 'motion/react-m';
 import { useEffect, useId, useRef, type ReactNode } from 'react';
 import { Button } from './Button.tsx';
 
@@ -36,17 +37,25 @@ export function Modal({ open, onClose, title, children, footer }: ModalProps) {
       }}
       className="m-auto w-[calc(100%-2rem)] max-w-lg rounded-3xl bg-surface p-0 text-ink shadow-soft"
     >
-      <div className="p-6">
-        <h2 id={titleId} className="font-display text-2xl text-forest">
-          {title}
-        </h2>
-        <div className="mt-3 text-sm leading-6 text-forest/75">{children}</div>
-      </div>
-      {footer && (
-        <div className="flex flex-wrap justify-end gap-3 border-t border-forest/10 px-6 py-4">
-          {footer}
+      {/* Keyed on open, so the content springs in each time the dialog opens. */}
+      <m.div
+        key={String(open)}
+        initial={{ opacity: 0, scale: 0.94, y: 12 }}
+        animate={{ opacity: 1, scale: 1, y: 0 }}
+        transition={{ type: 'spring', stiffness: 340, damping: 26 }}
+      >
+        <div className="p-6">
+          <h2 id={titleId} className="font-display text-2xl text-forest">
+            {title}
+          </h2>
+          <div className="mt-3 text-sm leading-6 text-forest/75">{children}</div>
         </div>
-      )}
+        {footer && (
+          <div className="flex flex-wrap justify-end gap-3 border-t border-forest/10 px-6 py-4">
+            {footer}
+          </div>
+        )}
+      </m.div>
     </dialog>
   );
 }
